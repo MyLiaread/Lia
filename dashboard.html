@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Auteur - LiaRead</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fedapay-checkout@1.1.6/dist/fedapay-checkout.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Arial', sans-serif; background: #f7f0ff; color: #2b2b2b; margin: 0; }
+    header { background: #6a0dad; color: #fff; padding: 20px; text-align: center; border-bottom: 3px solid gold; }
+    h1 { margin: 0; font-size: 2rem; }
+    #logoutBtn { background: gold; color: #6a0dad; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; float: right; margin-top: -40px; }
+    main { padding: 20px; }
+    .book-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 15px; }
+    .book-card img { width: 80px; height: 120px; border-radius: 10px; object-fit: cover; }
+    .book-info { flex-grow: 1; }
+    .book-info p { margin: 5px 0; }
+    .payBtn { background: #6a0dad; color: #fff; border: none; padding: 8px 15px; border-radius: 15px; cursor: pointer; }
+    #submitBookForm { background: #fff; padding: 20px; border-radius: 15px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    #submitBookForm input, #submitBookForm select { display: block; width: 100%; margin: 10px 0; padding: 10px; border-radius: 10px; border: 1px solid #ccc; }
+    #submitBookForm button { background: gold; color: #6a0dad; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+    footer { background: #6a0dad; color: #fff; padding: 15px; text-align: center; border-top: 3px solid gold; position: fixed; width: 100%; bottom: 0; }
+    footer a { color: gold; text-decoration: none; margin: 0 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tableau de bord Auteur</h1>
+    <button id="logoutBtn">Déconnexion</button>
+  </header>
+  <main>
+    <h2>Mes Livres</h2>
+    <div id="booksContainer"></div>
+
+    <h2>Soumettre un Nouveau Livre</h2>
+    <form id="submitBookForm">
+      <input type="text" id="bookTitle" placeholder="Titre du livre" required>
+      <input type="number" id="bookPrice" placeholder="Prix (F CFA)" required>
+      <input type="text" id="bookCategory" placeholder="Catégorie" required>
+      <input type="file" id="bookFile" accept=".pdf,.epub" required>
+      <input type="file" id="bookCover" accept="image/*" required>
+      <button type="submit">Soumettre le livre</button>
+    </form>
+  </main>
+
+  <footer>
+    Contact : 
+    <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a> | 
+    <a href="mailto:agodthanks@gmail.com">Email</a>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Affichage livres et calcul gain
+    function displayBooks() {
+      const booksContainer = document.getElementById('booksContainer');
+      if(!booksContainer) return;
+      const user = firebase.auth().currentUser;
+      if(!user) return;
+
+      firebase.firestore().collection('books')
+      .where('author', '==', user.email)
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(snapshot => {
+        booksContainer.innerHTML = '';
+        snapshot.forEach(doc => {
+          const book = doc.data();
+          const gain = (book.purchases || 0) * (book.price || 0);
+          booksContainer.innerHTML += `
+            <div class="book-card">
+              <img src="${book.coverURL}" alt="${book.title}">
+              <div class="book-info">
+                <h3>${book.title}</h3>
+                <p>Catégorie: ${book.category}</p>
+                <p>Vues: ${book.views || 0}</p>
+                <p>Achats: ${book.purchases || 0}</p>
+                <p>Gain: ${gain} F</p>
+              </div>
+              <button class="payBtn" data-title="${book.title}" data-price="${book.price}">Payer maintenant</button>
+            </div>
+          `;
+        });
+        initFedapayButtons();
+      });
+    }
+
+    // Redirection sur affichage
+    firebase.auth().onAuthStateChanged(user => {
+      if(!user) window.location.href = "login.html";
+      else displayBooks();
+    });
+  </script>
+</body>
+</html>
