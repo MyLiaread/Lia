@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion Auteur - LiaRead</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #d6c1ff, #6a0dad);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      width: 300px;
+      text-align: center;
+    }
+    h1 { margin-bottom: 30px; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 20px;
+      border: none;
+    }
+    button {
+      padding: 12px 25px;
+      border-radius: 25px;
+      border: none;
+      background: gold;
+      color: #6a0dad;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover { background: #fff; color: #6a0dad; transform: scale(1.05); }
+    .footer { margin-top: 20px; font-size: 0.9rem; }
+    .footer a { color: gold; text-decoration: none; margin: 0 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Connexion Auteur</h1>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Mot de passe" required>
+    <button onclick="login()">Se connecter</button>
+    <p>Pas encore de compte ? <a href="signup.html">Inscrivez-vous</a></p>
+  </div>
+
+  <div class="footer">
+    Contactez-moi : 
+    <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a> | 
+    <a href="mailto:agodthanks@gmail.com">Email</a>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+      authDomain: "liaread.firebaseapp.com",
+      projectId: "liaread",
+      storageBucket: "liaread.firebasestorage.app",
+      messagingSenderId: "951394019167",
+      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+      measurementId: "G-63JN91LVV6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          alert('Connexion réussie !');
+          window.location.href = 'dashboard.html';
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    }
+  </script>
+</body>
+  </html>
