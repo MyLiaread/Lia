@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiaRead - Accueil</title>
+<link rel="stylesheet" href="style.css">
+<!-- FedaPay Checkout -->
+<script src="https://checkout.fedapay.com/js/checkout.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+  <header>
+    <h1>LiaRead 📚✨</h1>
+    <nav>
+      <a href="compte.auteur.html" class="btn-auteur">Créer un compte auteur</a>
+      <input type="text" id="searchInput" placeholder="Rechercher un livre..." onkeyup="filterBooks()">
+    </nav>
+  </header>
+
+  <section class="categories">
+    <h2>Catégories</h2>
+    <div class="category-list">
+      <button onclick="filterCategory('roman')">Roman</button>
+      <button onclick="filterCategory('romantique')">Romantique</button>
+      <button onclick="filterCategory('milliardaire')">Milliardaire</button>
+      <button onclick="filterCategory('nouvelle')">Nouvelle</button>
+      <button onclick="filterCategory('conte')">Conte</button>
+      <button onclick="filterCategory('vampire/loup-garou')">Vampire/Loup-garou</button>
+      <button onclick="filterCategory('BD')">BD</button>
+      <button onclick="filterCategory('aventure')">Aventure</button>
+      <button onclick="filterCategory('bien-être')">Bien-être</button>
+      <button onclick="filterCategory('fantastique')">Fantastique</button>
+      <button onclick="filterCategory('all')">Tout</button>
+    </div>
+  </section>
+
+  <section class="books-section">
+    <h2>Livres Vedettes</h2>
+    <div class="books" id="booksList">
+      <!-- Livre fictif -->
+      <div class="book" data-category="romantique">
+        <img src="https://via.placeholder.com/150x220" alt="Aime moi">
+        <h3>Aime moi</h3>
+        <p>Auteur : GwenA</p>
+        <p>Prix : 2500 XOF</p>
+        <button id="acheterLivre" class="btn-pay">Payer maintenant</button>
+      </div>
+      <!-- Autres livres fictifs -->
+      <div class="book" data-category="roman">
+        <img src="https://via.placeholder.com/150x220" alt="Livre 2">
+        <h3>Le voyage magique</h3>
+        <p>Auteur : GwenA</p>
+        <p>Prix : 2000 XOF</p>
+        <button class="btn-pay" onclick="alert('Page de paiement à venir')">Payer maintenant</button>
+      </div>
+      <div class="book" data-category="fantastique">
+        <img src="https://via.placeholder.com/150x220" alt="Livre 3">
+        <h3>La forêt enchantée</h3>
+        <p>Auteur : GwenA</p>
+        <p>Prix : 3000 XOF</p>
+        <button class="btn-pay" onclick="alert('Page de paiement à venir')">Payer maintenant</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Email : <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a></p>
+    <p>WhatsApp : <a href="https://wa.me/2290199616039" target="_blank">+229 0199616039</a></p>
+  </footer>
+
+  <!-- Script principal -->
+  <script>
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+        authDomain: "liaread.firebaseapp.com",
+        projectId: "liaread",
+        storageBucket: "liaread.firebasestorage.app",
+        messagingSenderId: "951394019167",
+        appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+        measurementId: "G-63JN91LVV6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // FedaPay Checkout pour "Aime moi"
+    const acheterButton = document.getElementById('acheterLivre');
+    acheterButton.addEventListener('click', () => {
+      FedaPayCheckout.open({
+        publicKey: "pk_live_VTI5GzvTTu2XkwNZybaVi2v4",
+        amount: 2500,
+        currency: "XOF",
+        description: "Achat du livre 'Aime moi'",
+        customer: { email: "agodthanks@gmail.com" },
+        callback: function(data) {
+          alert("Merci pour votre achat !");
+        },
+        onClose: function() {
+          console.log("Paiement annulé.");
+        }
+      });
+    });
+
+    // Filtre par recherche
+    function filterBooks() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const books = document.querySelectorAll('.book');
+      books.forEach(book => {
+        const title = book.querySelector('h3').textContent.toLowerCase();
+        book.style.display = title.includes(input) ? 'block' : 'none';
+      });
+    }
+
+    // Filtre par catégorie
+    function filterCategory(cat) {
+      const books = document.querySelectorAll('.book');
+      books.forEach(book => {
+        if(cat === 'all' || book.dataset.category === cat){
+          book.style.display = 'block';
+        } else {
+          book.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
