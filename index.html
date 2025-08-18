@@ -1,110 +1,96 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liaread - Accueil</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
-<script src="https://cdn.fedapay.com/fedapay.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiaRead</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- SDK Fedapay -->
+    <script src="https://checkout.fedapay.com/fedapay-checkout.js"></script>
+
+    <!-- SDK Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 </head>
 <body>
-<header>
-    <h1>Liaread</h1>
-    <nav>
-        <a href="signup.html">Créer un compte auteur</a>
-        <a href="login.html">Connexion auteur</a>
-    </nav>
-</header>
+    <header>
+        <h1>LiaRead</h1>
+        <nav>
+            <span class="create-account"><a href="compte.auteur.html">Créer un compte auteur</a></span>
+        </nav>
+    </header>
 
-<section class="categories">
-    <h2>Catégories</h2>
-    <button onclick="filterCategory('Tous')">Tous</button>
-    <button onclick="filterCategory('Romance')">Romance</button>
-    <button onclick="filterCategory('Fantasy')">Fantasy</button>
-    <button onclick="filterCategory('Suspense')">Suspense</button>
-</section>
+    <section class="search-section">
+        <input type="text" id="search" placeholder="Rechercher un livre...">
+    </section>
 
-<section class="books" id="booksContainer">
-    <!-- Les livres seront injectés ici par JS -->
-</section>
+    <section class="categories">
+        <button data-cat="all">Tous</button>
+        <button data-cat="roman">Roman</button>
+        <button data-cat="romantique">Romantique</button>
+        <button data-cat="milliardaire">Milliardaire</button>
+        <button data-cat="nouvelle">Nouvelle</button>
+        <button data-cat="conte">Conte</button>
+        <button data-cat="vampire-loup">Vampire/Loup-Garou</button>
+        <button data-cat="bd">BD</button>
+        <button data-cat="aventure">Aventure</button>
+        <button data-cat="bien-etre">Bien-être</button>
+        <button data-cat="fantastique">Fantastique</button>
+    </section>
 
-<footer>
-    <p>Contactez-nous : 
-        <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a> | 
-        <a href="mailto:agodthanks@gmail.com">Email</a>
-    </p>
-</footer>
+    <section id="books">
+        <div class="book" data-cat="roman">
+            <h3>Aime moi</h3>
+            <p>Prix: 2500 XOF</p>
+            <button class="fedapay-button" data-titre="Aime moi" data-prix="2500" data-url="https://me.fedapay.com/56clJ3ZK">Acheter</button>
+            <button class="read-excerpt">Lire un extrait</button>
+        </div>
+        <div class="book" data-cat="romantique">
+            <h3>Amour Eternel</h3>
+            <p>Prix: 3000 XOF</p>
+            <button class="fedapay-button" data-titre="Amour Eternel" data-prix="3000" data-url="#">Acheter</button>
+            <button class="read-excerpt">Lire un extrait</button>
+        </div>
+        <div class="book" data-cat="fantastique">
+            <h3>Magie Noire</h3>
+            <p>Prix: 3500 XOF</p>
+            <button class="fedapay-button" data-titre="Magie Noire" data-prix="3500" data-url="#">Acheter</button>
+            <button class="read-excerpt">Lire un extrait</button>
+        </div>
+        <div class="book" data-cat="aventure">
+            <h3>Explorateurs du Temps</h3>
+            <p>Prix: 4000 XOF</p>
+            <button class="fedapay-button" data-titre="Explorateurs du Temps" data-prix="4000" data-url="#">Acheter</button>
+            <button class="read-excerpt">Lire un extrait</button>
+        </div>
+    </section>
 
-<script>
-const firebaseConfig = {
-    apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
-    authDomain: "liaread.firebaseapp.com",
-    projectId: "liaread",
-    storageBucket: "liaread.firebasestorage.app",
-    messagingSenderId: "951394019167",
-    appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
-    measurementId: "G-63JN91LVV6"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
+    <footer>
+        <p>Email: <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a></p>
+        <p>WhatsApp: <a href="https://wa.me/2290199616039" target="_blank">+2290199616039</a></p>
+    </footer>
 
-// Exemple de livres (à remplacer par Firestore si tu veux)
-const books = [
-    {id:1, titre:"Aime moi", auteur:"GwenA", prix:2500, categorie:"Romance"},
-    {id:2, titre:"Mystère Éternel", auteur:"GwenA", prix:3000, categorie:"Suspense"},
-    {id:3, titre:"Fantasy magique", auteur:"GwenA", prix:2800, categorie:"Fantasy"}
-];
-
-function displayBooks(filter="Tous"){
-    const container = document.getElementById("booksContainer");
-    container.innerHTML="";
-    books.forEach(book=>{
-        if(filter==="Tous" || book.categorie===filter){
-            const div = document.createElement("div");
-            div.className="book";
-            div.innerHTML=`
-                <h3>${book.titre}</h3>
-                <p>Auteur : ${book.auteur}</p>
-                <p>Prix : ${book.prix} FCFA</p>
-                <button onclick="payBook(${book.id})">Payer maintenant</button>
-            `;
-            container.appendChild(div);
-        }
-    });
-}
-
-function filterCategory(cat){
-    displayBooks(cat);
-}
-
-displayBooks();
-
-function payBook(bookId){
-    const book = books.find(b=>b.id===bookId);
-    const payment = new FedaPay.Checkout({
-        public_key: "pk_live_VTI5GzvTTu2XkwNZybaVi2v4",
-        transaction:{
-            amount: book.prix,
-            currency:"XOF",
-            reference:"LIA-"+book.titre.replace(/\s+/g,'-')+"-"+Date.now(),
-            customer:{email:"client@example.com"}
-        },
-        onSuccess: function(tx){
-            window.location.href="success.html";
-        },
-        onError: function(err){
-            alert("Le paiement a échoué. Retour à l'accueil.");
-            window.location.href="index.html";
-        }
-    });
-    payment.open();
-}
-</script>
+    <!-- Script principal -->
+    <script src="script.js"></script>
+    
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+            authDomain: "liaread.firebaseapp.com",
+            projectId: "liaread",
+            storageBucket: "liaread.firebasestorage.app",
+            messagingSenderId: "951394019167",
+            appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+            measurementId: "G-63JN91LVV6"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+    </script>
 </body>
-</html>
+    </html>
