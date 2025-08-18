@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LiaRead</title>
     <link rel="stylesheet" href="style.css">
-    
+
     <!-- SDK Fedapay -->
     <script src="https://checkout.fedapay.com/fedapay-checkout.js"></script>
 
@@ -14,83 +14,184 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <style>
+        body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; color:#222; }
+        header { background:#6a0dad; color:white; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+        header h1 { margin:0; }
+        header nav a { color:white; text-decoration:none; font-weight:bold; }
+        .search-section { padding:10px 20px; background:#eee; }
+        .search-section input { width:100%; padding:10px; font-size:16px; border-radius:5px; border:1px solid #ccc; }
+        .categories { display:flex; flex-wrap:wrap; padding:10px 20px; gap:10px; }
+        .categories button { padding:8px 12px; border:none; border-radius:5px; background:#6a0dad; color:white; cursor:pointer; }
+        .categories button:hover { background:#4b007d; }
+        #books { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; padding:20px; }
+        .book { background:white; padding:15px; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1); position:relative; }
+        .book h3 { margin-top:0; }
+        .book button { background:#6a0dad; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; margin-top:10px; }
+        .book button:hover { background:#4b007d; }
+        .share-buttons { position:absolute; top:10px; right:10px; display:flex; flex-direction:column; gap:5px; }
+        .share-buttons button { background:#eee; border:none; padding:5px; border-radius:50%; cursor:pointer; font-size:12px; }
+        footer { text-align:center; padding:20px; background:#222; color:white; }
+        /* Popup styles */
+        .popup-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center; z-index:1000; }
+        .popup-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:500px; position:relative; }
+        .popup-content h3 { margin-top:0; }
+        .popup-close { position:absolute; top:10px; right:10px; background:#6a0dad; color:white; border:none; border-radius:50%; width:25px; height:25px; cursor:pointer; }
+        .popup-close:hover { background:#4b007d; }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>LiaRead</h1>
-        <nav>
-            <span class="create-account"><a href="signup.html">Créer un compte auteur</a></span>
-        </nav>
-    </header>
+<header>
+    <h1>LiaRead</h1>
+    <nav>
+        <span class="create-account"><a href="signup.html">Créer un compte auteur</a></span>
+    </nav>
+</header>
 
-    <section class="search-section">
-        <input type="text" id="search" placeholder="Rechercher un livre...">
-    </section>
+<section class="search-section">
+    <input type="text" id="search" placeholder="Rechercher un livre...">
+</section>
 
-    <section class="categories">
-        <button data-cat="all">Tous</button>
-        <button data-cat="roman">Roman</button>
-        <button data-cat="romantique">Romantique</button>
-        <button data-cat="milliardaire">Milliardaire</button>
-        <button data-cat="nouvelle">Nouvelle</button>
-        <button data-cat="conte">Conte</button>
-        <button data-cat="vampire-loup">Vampire/Loup-Garou</button>
-        <button data-cat="bd">BD</button>
-        <button data-cat="aventure">Aventure</button>
-        <button data-cat="bien-etre">Bien-être</button>
-        <button data-cat="fantastique">Fantastique</button>
-    </section>
+<section class="categories">
+    <button data-cat="all">Tous</button>
+    <button data-cat="roman">Roman</button>
+    <button data-cat="romantique">Romantique</button>
+    <button data-cat="milliardaire">Milliardaire</button>
+    <button data-cat="nouvelle">Nouvelle</button>
+    <button data-cat="conte">Conte</button>
+    <button data-cat="vampire-loup">Vampire/Loup-Garou</button>
+    <button data-cat="bd">BD</button>
+    <button data-cat="aventure">Aventure</button>
+    <button data-cat="bien-etre">Bien-être</button>
+    <button data-cat="fantastique">Fantastique</button>
+</section>
 
-    <section id="books">
-        <div class="book" data-cat="roman">
-            <h3>Aime moi</h3>
-            <p>Prix: 2500 XOF</p>
-            <button class="fedapay-button" data-titre="Aime moi" data-prix="2500" data-url="https://me.fedapay.com/56clJ3ZK">Acheter</button>
-            <button class="read-excerpt">Lire un extrait</button>
+<section id="books">
+    <div class="book" data-cat="roman">
+        <h3>Aime moi</h3>
+        <p>Prix: 2500 XOF</p>
+        <button class="fedapay-button" data-link="https://me.fedapay.com/56clJ3ZK">Acheter</button>
+        <button class="popup-button" data-extrait="Khelil, un chef d'entreprise respecté, ne s'attendait pas à ce qu'Ava, sa nouvelle stagiaire, bouleverse sa vie et son cœur. Entre regards furtifs et conversations intimes, l'amour commence à germer là où personne ne l'attend.">Lire un extrait</button>
+        <div class="share-buttons">
+            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
+            <button onclick="window.open('https://twitter.com/share?url=https://liaread.com','_blank')">T</button>
         </div>
-        <div class="book" data-cat="romantique">
-            <h3>Amour Eternel</h3>
-            <p>Prix: 3000 XOF</p>
-            <button class="fedapay-button" data-titre="Amour Eternel" data-prix="3000" data-url="#">Acheter</button>
-            <button class="read-excerpt">Lire un extrait</button>
+    </div>
+    <div class="book" data-cat="romantique">
+        <h3>Amour Eternel</h3>
+        <p>Prix: 3000 XOF</p>
+        <button class="fedapay-button" data-link="#">Acheter</button>
+        <button class="popup-button" data-extrait="Une histoire d'amour qui traverse le temps et les épreuves.">Lire un extrait</button>
+        <div class="share-buttons">
+            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
+            <button onclick="window.open('https://twitter.com/share?url=https://liaread.com','_blank')">T</button>
         </div>
-        <div class="book" data-cat="fantastique">
-            <h3>Magie Noire</h3>
-            <p>Prix: 3500 XOF</p>
-            <button class="fedapay-button" data-titre="Magie Noire" data-prix="3500" data-url="#">Acheter</button>
-            <button class="read-excerpt">Lire un extrait</button>
+    </div>
+    <div class="book" data-cat="fantastique">
+        <h3>Magie Noire</h3>
+        <p>Prix: 3500 XOF</p>
+        <button class="fedapay-button" data-link="#">Acheter</button>
+        <button class="popup-button" data-extrait="Découvrez un univers où la magie noire domine et les héros luttent pour survivre.">Lire un extrait</button>
+        <div class="share-buttons">
+            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
+            <button onclick="window.open('https://twitter.com/share?url=https://liaread.com','_blank')">T</button>
         </div>
-        <div class="book" data-cat="aventure">
-            <h3>Explorateurs du Temps</h3>
-            <p>Prix: 4000 XOF</p>
-            <button class="fedapay-button" data-titre="Explorateurs du Temps" data-prix="4000" data-url="#">Acheter</button>
-            <button class="read-excerpt">Lire un extrait</button>
+    </div>
+    <div class="book" data-cat="aventure">
+        <h3>Explorateurs du Temps</h3>
+        <p>Prix: 4000 XOF</p>
+        <button class="fedapay-button" data-link="#">Acheter</button>
+        <button class="popup-button" data-extrait="Quatre explorateurs voyagent à travers le temps et affrontent des dangers inimaginables.">Lire un extrait</button>
+        <div class="share-buttons">
+            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
+            <button onclick="window.open('https://twitter.com/share?url=https://liaread.com','_blank')">T</button>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer>
-        <p>Email: <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a></p>
-        <p>WhatsApp: <a href="https://wa.me/2290199616039" target="_blank">+2290199616039</a></p>
-    </footer>
+<!-- Popup -->
+<div class="popup-overlay" id="popup">
+    <div class="popup-content">
+        <button class="popup-close" id="popup-close">&times;</button>
+        <h3>Extrait</h3>
+        <p id="popup-text"></p>
+    </div>
+</div>
 
-    <!-- Script principal -->
-    <script src="script.js"></script>
-    
-    <script>
-        // Configuration Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
-            authDomain: "liaread.firebaseapp.com",
-            projectId: "liaread",
-            storageBucket: "liaread.firebasestorage.app",
-            messagingSenderId: "951394019167",
-            appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
-            measurementId: "G-63JN91LVV6"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-    </script>
+<footer>
+    <p>Email: <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a></p>
+    <p>WhatsApp: <a href="https://wa.me/2290199616039" target="_blank">+2290199616039</a></p>
+</footer>
+
+<script>
+    // Configuration Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+        authDomain: "liaread.firebaseapp.com",
+        projectId: "liaread",
+        storageBucket: "liaread.firebasestorage.app",
+        messagingSenderId: "951394019167",
+        appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+        measurementId: "G-63JN91LVV6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // Filtrer par catégorie
+    const catButtons = document.querySelectorAll('.categories button');
+    const books = document.querySelectorAll('.book');
+    catButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cat = btn.dataset.cat;
+            books.forEach(book => {
+                if(cat === 'all' || book.dataset.cat === cat) {
+                    book.style.display = 'block';
+                } else {
+                    book.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Recherche
+    const searchInput = document.getElementById('search');
+    searchInput.addEventListener('input', () => {
+        const value = searchInput.value.toLowerCase();
+        books.forEach(book => {
+            const title = book.querySelector('h3').textContent.toLowerCase();
+            if(title.includes(value)) book.style.display = 'block';
+            else book.style.display = 'none';
+        });
+    });
+
+    // Popups
+    const popup = document.getElementById('popup');
+    const popupText = document.getElementById('popup-text');
+    const popupClose = document.getElementById('popup-close');
+    document.querySelectorAll('.popup-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            popupText.textContent = btn.dataset.extrait;
+            popup.style.display = 'flex';
+        });
+    });
+    popupClose.addEventListener('click', () => popup.style.display='none');
+    popup.addEventListener('click', e => { if(e.target===popup) popup.style.display='none'; });
+
+    // Fedapay Checkout
+    document.querySelectorAll('.fedapay-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const link = btn.dataset.link;
+            if(link && link!=='#') {
+                window.open(link, '_blank');
+            } else {
+                alert('Lien de paiement non défini.');
+            }
+        });
+    });
+</script>
 </body>
-    </html>
+</html>
+``
