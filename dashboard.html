@@ -208,14 +208,12 @@
     <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- === Firebase auth persistence + onAuthStateChanged (module) === -->
+  <!-- === Firebase auth persistence + onAuthStateChanged === -->
   <script type="module">
-    // Firebase v10 modules via CDN
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    // Ta configuration Firebase (fournie)
     const firebaseConfig = {
       apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
       authDomain: "liaread.firebaseapp.com",
@@ -226,41 +224,31 @@
       measurementId: "G-63JN91LVV6"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    // Analytics peut échouer si non autorisé dans l'environnement — on ignore les erreurs
-    try { getAnalytics(app); } catch (e) { /* silent */ }
+    try { getAnalytics(app); } catch (e) {}
 
     const auth = getAuth(app);
 
-    // Définit la persistance locale : l'utilisateur reste connecté après fermeture du navigateur
     setPersistence(auth, browserLocalPersistence).catch((err) => {
       console.warn("Impossible de définir la persistance :", err);
     });
 
-    // Écoute l'état d'authentification
     onAuthStateChanged(auth, (user) => {
       const welcome = document.getElementById("welcome");
       if (user) {
-        // utilisateur connecté -> affichage du nom ou email
         if (welcome) welcome.textContent = `Bienvenue, ${user.displayName || user.email} ✨`;
       } else {
-        // utilisateur non connecté -> redirection vers la page de login
-        // si tu souhaites rester sur la page sans redirection, supprime la ligne suivante
         window.location.href = "login.html";
       }
     });
 
-    // Gérer la déconnexion via le bouton #logout
     const logoutBtn = document.getElementById("logout");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", async () => {
         try {
           await signOut(auth);
-          // après déconnexion redirige vers login
           window.location.href = "login.html";
         } catch (err) {
-          // en cas d'erreur, log pour debug; tu peux afficher une popup si tu veux
           console.error("Erreur lors de la déconnexion :", err);
           alert("Erreur lors de la déconnexion. Réessaie.");
         }
@@ -268,7 +256,7 @@
     }
   </script>
 
-  <!-- === FormSubmit handling + popup (script d'origine, inchangé fonctionnellement) === -->
+  <!-- === FormSubmit handling + popup === -->
   <script>
     const form = document.getElementById('bookForm');
     const popup = document.getElementById('popupMessage');
