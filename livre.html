@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Détail du livre - LiaRead</title>
+  <style>
+    /* Style simple et assorti à LiaRead */
+    body { font-family: Arial, sans-serif; margin:0; padding:20px; background:#f5f5f5; color:#222; }
+    .container { max-width:900px; margin:20px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
+    .top { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; }
+    .cover { flex:0 0 200px; }
+    .cover img { width:200px; height:auto; border-radius:6px; box-shadow:0 4px 8px rgba(0,0,0,0.06); }
+    .meta { flex:1; min-width:200px; }
+    h1 { margin:0 0 10px 0; font-size:22px; color:#6a0dad; }
+    p { margin:6px 0; }
+    .price { font-weight:bold; margin-top:8px; }
+    .actions { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+    .btn { background:#6a0dad; color:white; border:none; padding:10px 14px; border-radius:6px; cursor:pointer; }
+    .btn.secondary { background:#eee; color:#222; }
+    .btn:active { transform:translateY(1px); }
+    .small { padding:8px; border-radius:50%; width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center; font-size:16px; }
+    .share-row { margin-top:12px; display:flex; gap:8px; align-items:center; }
+    .excerpt { margin-top:18px; background:#fafafa; padding:12px; border-radius:6px; border:1px solid #eee; }
+    a.back { text-decoration:none; color:#6a0dad; display:inline-block; margin-bottom:12px; }
+    footer { text-align:center; margin-top:14px; color:#666; font-size:14px; }
+    /* Popup */
+    .popup-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:9999; }
+    .popup { background:#fff; padding:18px; border-radius:8px; width:90%; max-width:600px; box-shadow:0 8px 30px rgba(0,0,0,0.2); }
+    .popup h3 { margin-top:0; }
+    .close-x { position:absolute; right:14px; top:10px; background:#6a0dad; color:#fff; border-radius:50%; width:28px; height:28px; border:none; cursor:pointer; }
+    @media (max-width:520px) {
+      .top { flex-direction:column; align-items:center; }
+      .cover { flex-basis:auto; }
+      .meta { text-align:center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">&larr; Retour au catalogue</a>
+
+    <div class="top">
+      <div class="cover">
+        <img id="couverture" src="" alt="Couverture du livre">
+      </div>
+
+      <div class="meta">
+        <h1 id="titre">Titre du livre</h1>
+        <p id="auteur">Auteur : —</p>
+        <p class="price" id="prix">Prix : —</p>
+
+        <div class="actions">
+          <button id="btn-buy" class="btn">Payer maintenant</button>
+          <button id="btn-extrait" class="btn secondary">Lire un extrait</button>
+          <button id="btn-copy" class="small secondary" title="Copier le lien">🔗</button>
+          <button id="btn-fb" class="small secondary" title="Partager sur Facebook">f</button>
+          <button id="btn-wa" class="small secondary" title="Partager sur WhatsApp">wa</button>
+        </div>
+
+        <div class="share-row" style="margin-top:8px;">
+          <small>Partager ce livre :</small>
+        </div>
+
+        <div id="extrait-preview" class="excerpt" style="display:none;">
+          <strong>Extrait</strong>
+          <p id="extrait-text" style="margin:8px 0 0 0;"></p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <h3>Description</h3>
+      <p id="desc">Aucune description fournie.</p>
+    </div>
+
+    <footer>
+      <p>LiaRead • <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a></p>
+    </footer>
+  </div>
+
+  <!-- Popup pour extrait -->
+  <div id="popup" class="popup-overlay">
+    <div class="popup" role="dialog" aria-modal="true">
+      <button id="popup-close" class="close-x">&times;</button>
+      <h3>Extrait</h3>
+      <p id="popup-content" style="white-space:pre-wrap;"></p>
+    </div>
+  </div>
+
+  <script>
+    // Récupérer paramètres d'URL
+    const params = new URLSearchParams(window.location.search);
+    const titre = params.get('titre') || 'Titre non défini';
+    const auteur = params.get('auteur') || 'Auteur non défini';
+    const prix = params.get('prix') || 'Prix non défini';
+    const img = params.get('img') || '';
+    const extrait = params.get('extrait') || '';
+    const payLink = params.get('pay') || ''; // optionnel
+    const desc = params.get('desc') || '';
+
+    // Elements
+    const titreEl = document.getElementById('titre');
+    const auteurEl = document.getElementById('auteur');
+    const prixEl = document.getElementById('prix');
+    const couvertureEl = document.getElementById('couverture');
+    const excerptPreview = document.getElementById('extrait-preview');
+    const extraitText = document.getElementById('extrait-text');
+    const btnBuy = document.getElementById('btn-buy');
+    const btnExtrait = document.getElementById('btn-extrait');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnFb = document.getElementById('btn-fb');
+    const btnWa = document.getElementById('btn-wa');
+    const popup = document.getElementById('popup');
+    const popupContent = document.getElementById('popup-content');
+    const popupClose = document.getElementById('popup-close');
+    const descEl = document.getElementById('desc');
+
+    // Afficher les infos
+    titreEl.textContent = titre;
+    auteurEl.textContent = "Auteur : " + auteur;
+    prixEl.textContent = "Prix : " + prix;
+    descEl.textContent = desc || 'Pas de description fournie.';
+
+    // Gestion de l'image (support Google Drive direct link)
+    function setImage(src) {
+      if(!src) {
+        couvertureEl.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600"><rect fill="%23eee" width="100%" height="100%"/><text x="50%" y="50%" font-size="18" dominant-baseline="middle" text-anchor="middle" fill="%23999">Aucune image</text></svg>';
+        return;
+      }
+      // Si l'utilisateur a fourni un lien drive "view?..." on le laisse (index transforme déjà vers uc?export=view&id=)
+      couvertureEl.src = src;
+    }
+    setImage(img);
+
+    // Si l'image échoue -> placeholder
+    couvertureEl.addEventListener('error', () => {
+      setImage('');
+    });
+
+    // Extrait : afficher preview si existe
+    if(extrait) {
+      extraitText.textContent = extrait;
+      excerptPreview.style.display = 'block';
+    } else {
+      excerptPreview.style.display = 'none';
+    }
+
+    // Bouton "Lire un extrait" -> popup
+    btnExtrait.addEventListener('click', () => {
+      if(!extrait) {
+        alert('Aucun extrait disponible pour ce livre.');
+        return;
+      }
+      popupContent.textContent = extrait;
+      popup.style.display = 'flex';
+    });
+    popupClose.addEventListener('click', () => popup.style.display = 'none');
+    popup.addEventListener('click', (e) => { if(e.target === popup) popup.style.display = 'none'; });
+
+    // Bouton "Payer maintenant"
+    btnBuy.addEventListener('click', () => {
+      if(payLink) {
+        // si le lien contient fedapay checkout ou me.fedapay.com on l'ouvre
+        window.open(payLink, '_blank');
+      } else {
+        alert('Aucun lien de paiement défini pour ce livre. (Paramètre URL "pay" absent)');
+      }
+    });
+
+    // Construire l'URL actuelle (avec paramètres) — utilisée pour partager
+    function currentFullUrl() {
+      return window.location.href;
+    }
+
+    // Copier le lien
+    btnCopy.addEventListener('click', async () => {
+      const url = currentFullUrl();
+      try {
+        await navigator.clipboard.writeText(url);
+        alert('Lien copié dans le presse-papier !\n' + url);
+      } catch (err) {
+        prompt('Copie manuelle : sélectionne et copie ce lien', url);
+      }
+    });
+
+    // Partager Facebook
+    btnFb.addEventListener('click', () => {
+      const shareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(currentFullUrl());
+      window.open(shareUrl, '_blank');
+    });
+
+    // Partager WhatsApp
+    btnWa.addEventListener('click', () => {
+      const shareUrl = 'https://wa.me/?text=' + encodeURIComponent(currentFullUrl());
+      window.open(shareUrl, '_blank');
+    });
+
+    // Accessibilité: raccourci clavier pour fermer popup avec Escape
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && popup.style.display === 'flex') popup.style.display = 'none';
+    });
+
+    // Si la page est ouverte depuis file:// certains navigateurs bloquent clipboard; on a fallback prompt déjà.
+  </script>
+</body>
+                                                                  </html>
