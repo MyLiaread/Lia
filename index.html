@@ -75,7 +75,7 @@
         <button class="popup-button" data-extrait="Khelil, un chef d'entreprise respecté, ne s'attendait pas à ce qu'Ava, sa nouvelle stagiaire, bouleverse sa vie et son cœur. Entre regards furtifs et conversations intimes, l'amour commence à germer là où personne ne l'attend.">Lire un extrait</button>
         <div class="share-buttons">
             <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button onclick="window.open('https://twitter.com/share?url=https://liaread.com','_blank')">T</button>
+            <button class="copy-link" title="Copier le lien du livre">🔗</button>
         </div>
     </div>
     <div class="book" data-cat="romantique">
@@ -85,7 +85,7 @@
         <button class="popup-button" data-extrait="Une histoire d'amour qui traverse le temps et les épreuves.">Lire un extrait</button>
         <div class="share-buttons">
             <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button onclick="window.open('https://twitter.com/share?url=https://liaread.com','_blank')">T</button>
+            <button class="copy-link" title="Copier le lien du livre">🔗</button>
         </div>
     </div>
     <div class="book" data-cat="fantastique">
@@ -95,7 +95,7 @@
         <button class="popup-button" data-extrait="Découvrez un univers où la magie noire domine et les héros luttent pour survivre.">Lire un extrait</button>
         <div class="share-buttons">
             <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button onclick="window.open('https://twitter.com/share?url=https://liaread.com','_blank')">T</button>
+            <button class="copy-link" title="Copier le lien du livre">🔗</button>
         </div>
     </div>
     <div class="book" data-cat="aventure">
@@ -105,7 +105,21 @@
         <button class="popup-button" data-extrait="Quatre explorateurs voyagent à travers le temps et affrontent des dangers inimaginables.">Lire un extrait</button>
         <div class="share-buttons">
             <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button onclick="window.open('https://twitter.com/share?url=https://liaread.com','_blank')">T</button>
+            <button class="copy-link" title="Copier le lien du livre">🔗</button>
+        </div>
+    </div>
+
+    <!-- Nouveau livre ajouté : l'amour voit clair -->
+    <div class="book" data-cat="roman">
+        <h3>l'amour voit clair</h3>
+        <p>Auteur: GwenA</p>
+        <p>Prix: 1500 XOF</p>
+        <img src="https://drive.google.com/uc?export=view&id=1-8pRk9eTGo7n050Fvo-AVewmsnoyJGPS" alt="Couverture du livre" width="200">
+        <button class="fedapay-button" data-link="#">Acheter</button>
+        <button class="popup-button" data-extrait="Extrait fictif">Lire un extrait</button>
+        <div class="share-buttons">
+            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
+            <button class="copy-link" title="Copier le lien du livre">🔗</button>
         </div>
     </div>
 </section>
@@ -191,7 +205,72 @@
             }
         });
     });
+
+    // Fonction pour construire le lien de partage pour un livre (vers livre.html)
+    function buildShareUrlForBook(book) {
+        const title = book.querySelector('h3') ? book.querySelector('h3').textContent.trim() : '';
+        // chercher un paragraphe "Auteur: ..." si présent
+        let author = '';
+        const ps = book.querySelectorAll('p');
+        ps.forEach(p => {
+            const txt = p.textContent.trim();
+            if(txt.toLowerCase().startsWith('auteur')) author = txt.split(':').slice(1).join(':').trim();
+            else if(!author && txt.toLowerCase().startsWith('prix')) {
+                // ignore prix for author
+            }
+        });
+        // si auteur non trouvé, tenter un <p> qui ne soit pas le prix
+        if(!author) {
+            ps.forEach(p => {
+                const txt = p.textContent.trim();
+                if(!txt.toLowerCase().startsWith('prix') && !txt.toLowerCase().startsWith('auteur')) {
+                    // could be other info, but leave empty
+                }
+            });
+        }
+        // prix
+        let price = '';
+        ps.forEach(p => {
+            const txt = p.textContent.trim();
+            if(txt.toLowerCase().startsWith('prix')) price = txt.split(':').slice(1).join(':').trim();
+        });
+        // image
+        const imgEl = book.querySelector('img');
+        const img = imgEl ? imgEl.src : '';
+        // extrait
+        const extraitBtn = book.querySelector('.popup-button');
+        const extrait = extraitBtn ? extraitBtn.dataset.extrait || '' : '';
+
+        const params = new URLSearchParams();
+        if(title) params.set('titre', title);
+        if(author) params.set('auteur', author);
+        if(price) params.set('prix', price);
+        if(img) params.set('img', img);
+        if(extrait) params.set('extrait', extrait);
+
+        // construire URL absolue basée sur le répertoire actuel + livre.html
+        // ex: if current is https://domain/path/index.html -> baseDir = https://domain/path/
+        const loc = window.location;
+        const baseDir = loc.origin + loc.pathname.replace(/\/[^\/]*$/, '/');
+        return baseDir + 'livre.html?' + params.toString();
+    }
+
+    // Copier le lien du livre quand on clique sur le bouton copy-link
+    document.querySelectorAll('.copy-link').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const book = btn.closest('.book');
+            const url = buildShareUrlForBook(book);
+            try {
+                await navigator.clipboard.writeText(url);
+                // message simple : tu peux personnaliser ou remplacer par un tooltip
+                alert('Lien copié dans le presse-papier !\n' + url);
+            } catch (err) {
+                // fallback : sélectionner et informer l'utilisateur
+                prompt('Copie manuelle : sélectionne et copie ce lien', url);
+            }
+        });
+    });
+
 </script>
 </body>
 </html>
-``
