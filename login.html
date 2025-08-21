@@ -2,98 +2,132 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <title>Connexion Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion Auteur - LiaRead</title>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #d6c1ff, #6a0dad);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+      background:#f9f9f9;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      margin:0;
     }
-    .container {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 40px;
-      border-radius: 25px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      width: 300px;
-      text-align: center;
+    .login-container {
+      background:white;
+      padding:25px 30px;
+      border-radius:12px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+      width:300px;
     }
-    h1 { margin-bottom: 30px; }
+    h1 {
+      text-align:center;
+      color:#4b0082;
+      font-size:20px;
+      margin-bottom:20px;
+    }
     input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 20px;
-      border: none;
+      width:100%;
+      padding:10px;
+      margin:10px 0;
+      border-radius:6px;
+      border:1px solid #ccc;
+      font-size:14px;
     }
     button {
-      padding: 12px 25px;
-      border-radius: 25px;
-      border: none;
-      background: gold;
-      color: #6a0dad;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      width:100%;
+      padding:10px;
+      background:#4b0082;
+      color:white;
+      border:none;
+      border-radius:6px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
     }
-    button:hover { background: #fff; color: #6a0dad; transform: scale(1.05); }
-    .footer { margin-top: 20px; font-size: 0.9rem; }
-    .footer a { color: gold; text-decoration: none; margin: 0 5px; }
+    button:hover {
+      background:#360061;
+    }
+    #message {
+      text-align:center;
+      margin-top:10px;
+      font-size:14px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Connexion Auteur</h1>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Mot de passe" required>
-    <button onclick="login()">Se connecter</button>
-    <p>Pas encore de compte ? <a href="signup.html">Inscrivez-vous</a></p>
-  </div>
 
-  <div class="footer">
-    Contactez-moi : 
-    <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a> | 
-    <a href="mailto:agodthanks@gmail.com">Email</a>
-  </div>
+<div class="login-container">
+  <h1>Connexion Auteur</h1>
+  <input type="email" id="email" placeholder="Email" required>
+  <input type="password" id="password" placeholder="Mot de passe" required>
+  <button id="loginBtn">Se connecter</button>
+  <p id="message"></p>
+</div>
 
-  <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
-      authDomain: "liaread.firebaseapp.com",
-      projectId: "liaread",
-      storageBucket: "liaread.firebasestorage.app",
-      messagingSenderId: "951394019167",
-      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
-      measurementId: "G-63JN91LVV6"
-    };
+<!-- Firebase JS SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
+  import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+  // Configuration Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+    authDomain: "liaread.firebaseapp.com",
+    projectId: "liaread",
+    storageBucket: "liaread.firebasestorage.app",
+    messagingSenderId: "951394019167",
+    appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+    measurementId: "G-63JN91LVV6"
+  };
 
-    function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+  // Initialisation Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          alert('Connexion réussie !');
-          window.location.href = 'dashboard.html';
-        })
-        .catch(error => {
-          alert(error.message);
-        });
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const loginBtn = document.getElementById('loginBtn');
+  const message = document.getElementById('message');
+
+  // Vérifier si l'utilisateur est déjà connecté
+  onAuthStateChanged(auth, user => {
+    if(user) {
+      window.location.href = "dashboard.html"; // Redirige vers dashboard
     }
-  </script>
+  });
+
+  loginBtn.addEventListener('click', () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    if(!email || !password) {
+      message.textContent = "Veuillez remplir tous les champs !";
+      message.style.color = "red";
+      return;
+    }
+
+    // Persistance de connexion
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password);
+      })
+      .then(userCredential => {
+        message.textContent = "✅ Connexion réussie ! Redirection...";
+        message.style.color = "green";
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1500);
+      })
+      .catch(error => {
+        message.textContent = "❌ " + error.message;
+        message.style.color = "red";
+      });
+  });
+</script>
+
 </body>
-  </html>
+    </html>
