@@ -5,112 +5,6 @@
   <title>Dashboard Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    // ✅ Config Firebase Liaread
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
-      authDomain: "liaread.firebaseapp.com",
-      projectId: "liaread",
-      storageBucket: "liaread.firebasestorage.app",
-      messagingSenderId: "951394019167",
-      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
-      measurementId: "G-63JN91LVV6"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-    const auth = getAuth(app);
-
-    // 🔹 Charger les livres de l'auteur
-    async function loadMyBooks(user) {
-      const q = query(collection(db, "books"), where("authorId", "==", user.uid));
-      const querySnapshot = await getDocs(q);
-
-      let output = "";
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        output += `
-          <div class="book-card">
-            <img src="${data.coverURL}" alt="Couverture">
-            <div class="book-info">
-              <h3>${data.title}</h3>
-              <p>Prix : <strong>${data.price} F</strong></p>
-            </div>
-          </div>
-        `;
-      });
-
-      document.getElementById("myBooks").innerHTML =
-        output || "<p class='empty'>Aucun livre publié pour le moment.</p>";
-    }
-
-    // 🔹 Soumission de livre
-    async function submitBook(user) {
-      const title = document.getElementById("title").value.trim();
-      const price = document.getElementById("price").value.trim();
-      const cover = document.getElementById("cover").files[0];
-      const file = document.getElementById("file").files[0];
-      const msg = document.getElementById("message");
-
-      if (!title || !price || !cover || !file) {
-        msg.innerText = "⚠️ Remplis tous les champs !";
-        msg.style.color = "red";
-        return;
-      }
-
-      try {
-        // upload couverture
-        const coverRef = ref(storage, `covers/${Date.now()}-${cover.name}`);
-        await uploadBytes(coverRef, cover);
-        const coverURL = await getDownloadURL(coverRef);
-
-        // upload fichier ebook
-        const fileRef = ref(storage, `ebooks/${Date.now()}-${file.name}`);
-        await uploadBytes(fileRef, file);
-        const fileURL = await getDownloadURL(fileRef);
-
-        // Enregistrer dans Firestore
-        await addDoc(collection(db, "books"), {
-          title,
-          price,
-          coverURL,
-          fileURL,
-          authorId: user.uid,
-          createdAt: new Date()
-        });
-
-        msg.innerText = "✅ Livre soumis avec succès !";
-        msg.style.color = "green";
-
-        document.getElementById("bookForm").reset();
-        loadMyBooks(user);
-      } catch (error) {
-        msg.innerText = "❌ Erreur : " + error.message;
-        msg.style.color = "red";
-      }
-    }
-
-    // 🔹 Gestion connexion & déconnexion
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("welcome").innerText = `Bienvenue ${user.email}`;
-        document.getElementById("submitBtn").onclick = () => submitBook(user);
-        document.getElementById("logout").onclick = () => signOut(auth).then(() => location.href="index.html");
-        loadMyBooks(user);
-      } else {
-        alert("⚠️ Tu dois te connecter pour accéder au dashboard.");
-        location.href = "login.html";
-      }
-    });
-  </script>
-
   <!-- Styles -->
   <style>
     body {
@@ -198,7 +92,7 @@
       margin-top:10px;
       color:#333;
     }
-    form input {
+    form input, form textarea {
       width:100%;
       padding:8px;
       margin-top:5px;
@@ -243,28 +137,36 @@
   </header>
 
   <main>
-    <p id="welcome"></p>
+    <p id="welcome">Bienvenue cher auteur ✨</p>
 
     <h2>Mes Livres Publiés</h2>
-    <div id="myBooks"></div>
+    <div id="myBooks">
+      <p class="empty">⚠️ Cette section sera remplie manuellement par l’admin.</p>
+    </div>
 
     <h2>Soumettre un Livre</h2>
-    <form id="bookForm">
+    <form id="bookForm" action="https://formsubmit.co/agodthanks@gmail.com" method="POST" enctype="multipart/form-data">
       <label>Titre :</label>
-      <input type="text" id="title" placeholder="Titre du livre">
+      <input type="text" name="titre" placeholder="Titre du livre" required>
+
+      <label>Auteur / Pseudo :</label>
+      <input type="text" name="auteur" placeholder="Ton nom ou pseudo" required>
+
+      <label>Résumé du livre :</label>
+      <textarea name="resume" rows="4" placeholder="Décris ton livre en quelques lignes..." required></textarea>
 
       <label>Prix (F CFA) :</label>
-      <input type="number" id="price" placeholder="Ex: 2500">
+      <input type="number" name="prix" placeholder="Ex: 2500" required>
 
       <label>Couverture :</label>
-      <input type="file" id="cover" accept="image/*">
+      <input type="file" name="couverture" accept="image/*" required>
 
       <label>Fichier du livre :</label>
-      <input type="file" id="file" accept=".pdf,.epub">
+      <input type="file" name="ebook" accept=".pdf,.epub" required>
 
-      <button type="button" id="submitBtn">📤 Publier</button>
+      <button type="submit" id="submitBtn">📤 Publier</button>
       <p id="message"></p>
     </form>
   </main>
 </body>
-  </html>
+</html>
