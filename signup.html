@@ -2,100 +2,195 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <title>Inscription Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Créer un compte Auteur - LiaRead</title>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #d6c1ff, #6a0dad);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+      background:#f9f9f9;
+      margin:0;
+      padding:0;
     }
-    .container {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 40px;
-      border-radius: 25px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      width: 300px;
-      text-align: center;
+    header {
+      background:#4b0082;
+      color:white;
+      padding:15px;
+      text-align:center;
     }
-    h1 { margin-bottom: 30px; }
+    header h1 {
+      margin:0;
+      font-size:20px;
+    }
+    header a {
+      display:block;
+      margin-top:5px;
+      color:#fff;
+      text-decoration:none;
+      font-size:14px;
+    }
+    main {
+      max-width:400px;
+      margin:30px auto;
+      background:white;
+      padding:20px;
+      border-radius:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align:center;
+      color:#4b0082;
+    }
+    label {
+      display:block;
+      margin-top:12px;
+      font-size:14px;
+      color:#333;
+    }
     input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 20px;
-      border: none;
+      width:100%;
+      padding:10px;
+      margin-top:5px;
+      border:1px solid #ccc;
+      border-radius:6px;
     }
     button {
-      padding: 12px 25px;
-      border-radius: 25px;
-      border: none;
-      background: gold;
-      color: #6a0dad;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      margin-top:20px;
+      width:100%;
+      background:#4b0082;
+      color:white;
+      padding:12px;
+      border:none;
+      border-radius:6px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
     }
-    button:hover { background: #fff; color: #6a0dad; transform: scale(1.05); }
-    .footer { margin-top: 20px; font-size: 0.9rem; }
-    .footer a { color: gold; text-decoration: none; margin: 0 5px; }
+    button:hover {
+      background:#360061;
+    }
+    p {
+      text-align:center;
+      margin-top:15px;
+      font-size:14px;
+    }
+    p a {
+      color:#4b0082;
+      text-decoration:none;
+      font-weight:bold;
+    }
+    footer {
+      background:#4b0082;
+      color:white;
+      padding:15px;
+      text-align:center;
+      margin-top:30px;
+      font-size:14px;
+    }
+    footer a {
+      color:#fff;
+      text-decoration:none;
+      margin:0 5px;
+    }
+    #message {
+      text-align:center;
+      margin-top:10px;
+      font-size:14px;
+      font-weight:bold;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Créer un compte Auteur</h1>
-    <input type="text" id="name" placeholder="Nom complet" required>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Mot de passe" required>
-    <button onclick="signup()">S'inscrire</button>
-    <p>Déjà un compte ? <a href="login.html">Connectez-vous</a></p>
-  </div>
 
-  <div class="footer">
-    Contactez-moi : 
-    <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a> | 
-    <a href="mailto:agodthanks@gmail.com">Email</a>
-  </div>
+  <header>
+    <h1>Liaread</h1>
+    <a href="index.html">🏠 Retour à l’accueil</a>
+  </header>
+
+  <main>
+    <h2>Créer un compte auteur</h2>
+    <form id="signupForm">
+      <label>Nom d’auteur :</label>
+      <input type="text" id="penName" placeholder="Ex: DarkWriter" required>
+
+      <label>Vrai nom :</label>
+      <input type="text" id="realName" placeholder="Ex: Jean Kossi" required>
+
+      <label>Email :</label>
+      <input type="email" id="email" placeholder="exemple@mail.com" required>
+
+      <label>Mot de passe :</label>
+      <input type="password" id="password" placeholder="********" required>
+
+      <button type="submit">📖 S’inscrire</button>
+      <p id="message"></p>
+    </form>
+    <p>Déjà un compte ? <a href="login.html">Se connecter</a></p>
+  </main>
+
+  <footer>
+    📞 Contact : 
+    <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a> | 
+    <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
+  </footer>
+
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 
   <script>
-    // Firebase configuration
-    const firebaseConfig = FIREBASE_CONFIG;
-    
+    // 🔥 Config Firebase (la tienne déjà fournie)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+      authDomain: "liaread.firebaseapp.com",
+      projectId: "liaread",
+      storageBucket: "liaread.firebasestorage.app",
+      messagingSenderId: "951394019167",
+      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+      measurementId: "G-63JN91LVV6"
+    };
 
-    firebase.initializeApp(firebaseConfig);
+    // Initialiser Firebase
+    const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    function signup() {
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    const form = document.getElementById("signupForm");
+    const msg = document.getElementById("message");
 
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(userCredential => {
-          const user = userCredential.user;
-          // Ajouter les infos de l'auteur dans Firestore
-          db.collection('auteurs').doc(user.uid).set({
-            name: name,
-            email: email,
-            revenus: 0
-          });
-          alert('Compte créé avec succès !');
-          window.location.href = 'dashboard.html';
-        })
-        .catch(error => {
-          alert(error.message);
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const penName = document.getElementById("penName").value;
+      const realName = document.getElementById("realName").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        // Créer compte
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // Ajouter dans Firestore
+        await db.collection("users").doc(user.uid).set({
+          penName,
+          realName,
+          email,
+          createdAt: new Date()
         });
-    }
+
+        // Envoyer email de vérification
+        await user.sendEmailVerification();
+
+        msg.style.color = "green";
+        msg.textContent = "✅ Compte créé ! Vérifie ton email pour activer ton compte.";
+        form.reset();
+      } catch (error) {
+        msg.style.color = "red";
+        msg.textContent = "❌ " + error.message;
+      }
+    });
   </script>
 </body>
-    </html>
+  </html>
