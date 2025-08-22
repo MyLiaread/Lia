@@ -5,129 +5,25 @@
   <title>Dashboard Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Styles (inchangés) -->
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background:#f9f9f9;
-      margin:0;
-      padding:0;
-    }
-    header {
-      background:#4b0082;
-      color:white;
-      padding:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap: wrap;
-    }
-    header h1 {
-      font-size:18px;
-      margin:0;
-      cursor:pointer;
-    }
-    header .btn {
-      background:white;
-      color:#4b0082;
-      padding:8px 12px;
-      border-radius:6px;
-      text-decoration:none;
-      font-weight:bold;
-      font-size:14px;
-      margin-left:5px;
-      cursor:pointer;
-    }
-    main {
-      padding:15px;
-    }
-    h2 {
-      margin-top:25px;
-      color:#333;
-      font-size:18px;
-    }
-    #welcome {
-      font-weight:bold;
-      margin:10px 0;
-      color:#444;
-    }
-    form {
-      background:white;
-      padding:15px;
-      border-radius:12px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
-      margin-top:20px;
-    }
-    form label {
-      display:block;
-      font-size:14px;
-      margin-top:10px;
-      color:#333;
-    }
-    form input, form textarea, form select {
-      width:100%;
-      padding:8px;
-      margin-top:5px;
-      border:1px solid #ccc;
-      border-radius:6px;
-      box-sizing:border-box;
-    }
-    #submitBtn {
-      margin-top:15px;
-      width:100%;
-      background:#4b0082;
-      color:white;
-      padding:10px;
-      border:none;
-      border-radius:6px;
-      font-size:16px;
-      font-weight:bold;
-      cursor:pointer;
-    }
-    #submitBtn:hover {
-      background:#360061;
-    }
-    #message {
-      margin-top:10px;
-      font-size:14px;
-      text-align:center;
-    }
-    footer {
-      background:#4b0082;
-      color:white;
-      padding:15px;
-      text-align:center;
-      margin-top:30px;
-      font-size:14px;
-    }
-    footer a {
-      color:#fff;
-      text-decoration:none;
-      margin:0 5px;
-    }
-    /* Popup flottant */
-    #popupMessage {
-      display:none;
-      position:fixed;
-      top:20px;
-      right:20px;
-      background:#4b0082;
-      color:white;
-      padding:15px 20px;
-      border-radius:10px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);
-      z-index:1000;
-      font-weight:bold;
-    }
-    @media (max-width: 500px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      header .btn {
-        margin-top: 10px;
-        margin-left: 0;
-      }
-    }
+    body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; }
+    header { background:#4b0082; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; }
+    header h1 { font-size:18px; margin:0; cursor:pointer; }
+    header .btn { background:white; color:#4b0082; padding:8px 12px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px; margin-left:5px; cursor:pointer; }
+    main { padding:15px; }
+    h2 { margin-top:25px; color:#333; font-size:18px; }
+    #welcome { font-weight:bold; margin:10px 0; color:#444; }
+    form { background:white; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px; }
+    form label { display:block; font-size:14px; margin-top:10px; color:#333; }
+    form input, form textarea, form select { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; }
+    #submitBtn { margin-top:15px; width:100%; background:#4b0082; color:white; padding:10px; border:none; border-radius:6px; font-size:16px; font-weight:bold; cursor:pointer; }
+    #submitBtn:hover { background:#360061; }
+    #message { margin-top:10px; font-size:14px; text-align:center; }
+    footer { background:#4b0082; color:white; padding:15px; text-align:center; margin-top:30px; font-size:14px; }
+    footer a { color:#fff; text-decoration:none; margin:0 5px; }
+    #popupMessage { display:none; position:fixed; top:20px; right:20px; background:#4b0082; color:white; padding:15px 20px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2); z-index:1000; font-weight:bold; }
+    @media (max-width:500px){ header { flex-direction:column; align-items:flex-start } header .btn { margin-top:10px; margin-left:0 } }
   </style>
 </head>
 <body>
@@ -143,7 +39,19 @@
     <p id="welcome">Bienvenue cher auteur ✨</p>
 
     <h2>Soumettre un Livre</h2>
-    <form id="bookForm" action="https://formsubmit.co/agodthanks@gmail.com" method="POST" enctype="multipart/form-data">
+
+    <!-- FORMULAIRE : action FormSubmit (inchangé) -->
+    <form id="bookForm"
+          action="https://formsubmit.co/agodthanks@gmail.com"
+          method="POST"
+          enctype="multipart/form-data">
+
+      <!-- hidden inputs for FormSubmit -->
+      <input type="hidden" name="_captcha" value="false">
+      <!-- redirect after successful submit -->
+      <input type="hidden" name="_next" value="submit.success.html">
+      <input type="hidden" name="_subject" value="Nouvelle soumission de livre - {{titre}}">
+
       <label>Titre :</label>
       <input type="text" name="titre" placeholder="Titre du livre" required>
 
@@ -188,11 +96,12 @@
   <div id="popupMessage"></div>
 
   <footer>
-    📞 Contact : 
-    <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a> | 
+    📞 Contact :
+    <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a> |
     <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
   </footer>
 
+  <!-- Firebase (auth + persistence only) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -206,27 +115,30 @@
       appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
       measurementId: "G-63JN91LVV6"
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Persistance locale
-    setPersistence(auth, browserLocalPersistence);
+    // définir persistance (garde connecté)
+    setPersistence(auth, browserLocalPersistence).catch(()=>{/* ignore */});
 
-    // Vérifier si l'utilisateur est connecté
     onAuthStateChanged(auth, (user) => {
       if (!user) {
+        // si non connecté, renvoyer vers login
         alert("⚠️ Tu dois te connecter pour accéder au dashboard.");
         location.href = "login.html";
+      } else {
+        // afficher email dans le welcome
+        document.getElementById('welcome').innerText = `Bienvenue ${user.email} ✨`;
       }
     });
 
-    // Déconnexion
+    // bouton déconnexion
     document.getElementById("logout").addEventListener("click", () => {
-      signOut(auth).then(() => location.href="login.html");
+      signOut(auth).then(() => location.href = "login.html");
     });
   </script>
 
+  <!-- JS pour afficher popup puis soumettre normalement (FormSubmit recevra l'email) -->
   <script>
     const form = document.getElementById('bookForm');
     const popup = document.getElementById('popupMessage');
@@ -235,31 +147,29 @@
       popup.textContent = text;
       popup.style.background = isSuccess ? '#28a745' : '#dc3545';
       popup.style.display = 'block';
-      setTimeout(() => { popup.style.display = 'none'; }, 5000);
+      setTimeout(() => { popup.style.display = 'none'; }, 2500);
     }
 
-    form.addEventListener('submit', function(e) {
+    // IMPORTANT: on intercepte pour afficher un message, puis on appelle form.submit()
+    // form.submit() effectue un envoi réel POST natif (donc FormSubmit recevra les données).
+    form.addEventListener('submit', function(e){
       e.preventDefault();
-      const formData = new FormData(form);
 
-      fetch(form.action, {
-        method: "POST",
-        body: formData,
-        headers: { "Accept": "application/json" }
-      })
-      .then(response => {
-        if (response.ok) {
-          showPopup("✅ Livre publié avec succès ! L'admin vous contactera bientôt.", true);
-          form.reset();
-          setTimeout(() => { window.location.href = "submit.success.html"; }, 3000);
-        } else {
-          throw new Error("Une erreur est survenue, veuillez réessayer.");
-        }
-      })
-      .catch(error => {
-        showPopup(`❌ ${error.message}`, false);
-      });
+      // petite validation côté client (optionnel)
+      if (!form.checkValidity()) {
+        showPopup("❌ Remplis tous les champs requis.", false);
+        return;
+      }
+
+      showPopup("Envoi en cours…", true);
+
+      // Laisser un tout petit délai visuel, puis soumettre réellement (n'enclenche pas l'événement submit)
+      setTimeout(() => {
+        // this will perform a normal POST with files to FormSubmit
+        form.submit();
+        // FormSubmit redirigera vers _next (submit.success.html) automatiquement
+      }, 800);
     });
   </script>
 </body>
-</html>
+  </html>
