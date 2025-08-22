@@ -5,7 +5,6 @@
   <title>Dashboard Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Styles -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,10 +19,12 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
+      flex-wrap: wrap;
     }
     header h1 {
       font-size:18px;
       margin:0;
+      cursor:pointer;
     }
     header .btn {
       background:white;
@@ -34,11 +35,10 @@
       font-weight:bold;
       font-size:14px;
       margin-left:5px;
+      cursor:pointer;
     }
     main {
       padding:15px;
-      max-width:500px;
-      margin:0 auto;
     }
     h2 {
       margin-top:25px;
@@ -49,7 +49,6 @@
       font-weight:bold;
       margin:10px 0;
       color:#444;
-      text-align:center;
     }
     form {
       background:white;
@@ -70,6 +69,7 @@
       margin-top:5px;
       border:1px solid #ccc;
       border-radius:6px;
+      box-sizing:border-box;
     }
     #submitBtn {
       margin-top:15px;
@@ -118,11 +118,21 @@
       z-index:1000;
       font-weight:bold;
     }
+    @media (max-width: 500px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      header .btn {
+        margin-top: 10px;
+        margin-left: 0;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>📚 Dashboard Auteur</h1>
+    <h1 onclick="location.href='index.html'">📚 Liaread</h1>
     <div>
       <a href="index.html" class="btn">🏠 Accueil</a>
       <button id="logout" class="btn">🚪 Déconnexion</button>
@@ -130,7 +140,7 @@
   </header>
 
   <main>
-    <p id="welcome"></p>
+    <p id="welcome">Bienvenue cher auteur ✨</p>
 
     <h2>Soumettre un Livre</h2>
     <form id="bookForm" action="https://formsubmit.co/agodthanks@gmail.com" method="POST" enctype="multipart/form-data">
@@ -148,14 +158,14 @@
 
       <label>Catégorie :</label>
       <select name="categorie" required>
-        <option value="">-- Choisir une catégorie --</option>
+        <option value="">Sélectionnez une catégorie</option>
         <option value="roman">Roman</option>
         <option value="romantique">Romantique</option>
         <option value="milliardaire">Milliardaire</option>
         <option value="nouvelle">Nouvelle</option>
         <option value="conte">Conte</option>
         <option value="vampire/loup-garou">Vampire / Loup-Garou</option>
-        <option value="BD">BD</option>
+        <option value="bd">BD</option>
         <option value="aventure">Aventure</option>
         <option value="bien-être">Bien-être</option>
         <option value="fantastique">Fantastique</option>
@@ -170,16 +180,11 @@
       <label>Contact (email ou WhatsApp) :</label>
       <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +229XXXXXXXXX" required>
 
-      <label>
-        <input type="checkbox" id="persistence"> Rester connecté
-      </label>
-
       <button type="submit" id="submitBtn">📤 Publier</button>
       <p id="message"></p>
     </form>
   </main>
 
-  <!-- Popup flottant -->
   <div id="popupMessage"></div>
 
   <footer>
@@ -188,28 +193,43 @@
     <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const firebaseConfig = {  
-      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",  
-      authDomain: "liaread.firebaseapp.com",  
-      projectId: "liaread",  
-      storageBucket: "liaread.firebasestorage.app",  
-      messagingSenderId: "951394019167",  
-      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",  
-      measurementId: "G-63JN91LVV6"  
-    };  
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+      authDomain: "liaread.firebaseapp.com",
+      projectId: "liaread",
+      storageBucket: "liaread.firebasestorage.app",
+      messagingSenderId: "951394019167",
+      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+      measurementId: "G-63JN91LVV6"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const welcome = document.getElementById('welcome');
+    // Persistance locale
+    setPersistence(auth, browserLocalPersistence);
+
+    // Vérifier si l'utilisateur est connecté
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        alert("⚠️ Tu dois te connecter pour accéder au dashboard.");
+        location.href = "login.html";
+      }
+    });
+
+    // Déconnexion
+    document.getElementById("logout").addEventListener("click", () => {
+      signOut(auth).then(() => location.href="login.html");
+    });
+  </script>
+
+  <script>
     const form = document.getElementById('bookForm');
     const popup = document.getElementById('popupMessage');
-    const persistenceCheckbox = document.getElementById('persistence');
 
     function showPopup(text, isSuccess = true) {
       popup.textContent = text;
@@ -218,43 +238,28 @@
       setTimeout(() => { popup.style.display = 'none'; }, 5000);
     }
 
-    // 🔹 Persistance de connexion
-    onAuthStateChanged(auth, (user) => {
-      if(user){
-        welcome.innerText = `Bienvenue ${user.email} ✨`;
-      } else {
-        welcome.innerText = `Bienvenue cher auteur ✨`;
-      }
-    });
-
-    form.addEventListener('submit', function(e){
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
+      const formData = new FormData(form);
 
-      setPersistence(auth, persistenceCheckbox.checked ? browserLocalPersistence : browserSessionPersistence)
-        .then(() => {
-          const formData = new FormData(form);
-          fetch(form.action, {
-            method: "POST",
-            body: formData,
-            headers: { "Accept": "application/json" }
-          })
-          .then(response => {
-            if(response.ok){
-              showPopup("✅ Livre publié avec succès ! L'admin vous contactera bientôt.", true);
-              form.reset();
-              setTimeout(()=>{ window.location.href="submit.success.html"; }, 5000);
-            } else {
-              throw new Error("Une erreur est survenue, veuillez réessayer.");
-            }
-          })
-          .catch(error => { showPopup(`❌ ${error.message}`, false); });
-        });
-    });
-
-    // Déconnexion
-    document.getElementById('logout').addEventListener('click', ()=>{
-      auth.signOut().then(()=>{ window.location.href="index.html"; });
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: { "Accept": "application/json" }
+      })
+      .then(response => {
+        if (response.ok) {
+          showPopup("✅ Livre publié avec succès ! L'admin vous contactera bientôt.", true);
+          form.reset();
+          setTimeout(() => { window.location.href = "submit.success.html"; }, 3000);
+        } else {
+          throw new Error("Une erreur est survenue, veuillez réessayer.");
+        }
+      })
+      .catch(error => {
+        showPopup(`❌ ${error.message}`, false);
+      });
     });
   </script>
 </body>
-  </html>
+</html>
