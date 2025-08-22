@@ -4,42 +4,72 @@
   <meta charset="UTF-8">
   <title>Connexion Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       font-family: Arial, sans-serif;
       background:#f9f9f9;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
       margin:0;
+      padding:0;
     }
-    .login-container {
-      background:white;
-      padding:25px 30px;
-      border-radius:12px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.1);
-      width:300px;
-    }
-    h1 {
-      text-align:center;
-      color:#4b0082;
-      font-size:20px;
-      margin-bottom:20px;
-    }
-    input {
-      width:100%;
-      padding:10px;
-      margin:10px 0;
-      border-radius:6px;
-      border:1px solid #ccc;
-      font-size:14px;
-    }
-    button {
-      width:100%;
-      padding:10px;
+    header {
       background:#4b0082;
       color:white;
+      padding:15px;
+      text-align:center;
+    }
+    header h1 {
+      margin:0;
+      font-size:20px;
+    }
+    header a {
+      display:block;
+      margin-top:5px;
+      color:#fff;
+      text-decoration:none;
+      font-size:14px;
+    }
+    main {
+      max-width:400px;
+      margin:30px auto;
+      background:white;
+      padding:20px;
+      border-radius:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align:center;
+      color:#4b0082;
+    }
+    label {
+      display:block;
+      margin-top:12px;
+      font-size:14px;
+      color:#333;
+    }
+    input[type="email"], input[type="password"] {
+      width:100%;
+      padding:10px;
+      margin-top:5px;
+      border:1px solid #ccc;
+      border-radius:6px;
+    }
+    .checkbox-container {
+      margin-top:10px;
+      display:flex;
+      align-items:center;
+      font-size:14px;
+      color:#333;
+    }
+    .checkbox-container input {
+      margin-right:8px;
+    }
+    button {
+      margin-top:20px;
+      width:100%;
+      background:#4b0082;
+      color:white;
+      padding:12px;
       border:none;
       border-radius:6px;
       font-size:16px;
@@ -49,85 +79,130 @@
     button:hover {
       background:#360061;
     }
+    p {
+      text-align:center;
+      margin-top:15px;
+      font-size:14px;
+    }
+    p a {
+      color:#4b0082;
+      text-decoration:none;
+      font-weight:bold;
+    }
+    footer {
+      background:#4b0082;
+      color:white;
+      padding:15px;
+      text-align:center;
+      margin-top:30px;
+      font-size:14px;
+    }
+    footer a {
+      color:#fff;
+      text-decoration:none;
+      margin:0 5px;
+    }
     #message {
       text-align:center;
       margin-top:10px;
       font-size:14px;
+      font-weight:bold;
     }
   </style>
 </head>
 <body>
 
-<div class="login-container">
-  <h1>Connexion Auteur</h1>
-  <input type="email" id="email" placeholder="Email" required>
-  <input type="password" id="password" placeholder="Mot de passe" required>
-  <button id="loginBtn">Se connecter</button>
-  <p id="message"></p>
-</div>
+  <header>
+    <h1>Liaread</h1>
+    <a href="index.html">🏠 Retour à l’accueil</a>
+  </header>
 
-<!-- Firebase JS SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
-  import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  <main>
+    <h2>Connexion Auteur</h2>
+    <form id="loginForm">
+      <label>Email :</label>
+      <input type="email" id="email" placeholder="exemple@mail.com" required>
 
-  // Configuration Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
-    authDomain: "liaread.firebaseapp.com",
-    projectId: "liaread",
-    storageBucket: "liaread.firebasestorage.app",
-    messagingSenderId: "951394019167",
-    appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
-    measurementId: "G-63JN91LVV6"
-  };
+      <label>Mot de passe :</label>
+      <input type="password" id="password" placeholder="********" required>
 
-  // Initialisation Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
+      <div class="checkbox-container">
+        <input type="checkbox" id="rememberMe">
+        <label for="rememberMe">Rester connecté</label>
+      </div>
 
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
-  const loginBtn = document.getElementById('loginBtn');
-  const message = document.getElementById('message');
+      <button type="submit">🔑 Se connecter</button>
+      <p id="message"></p>
+    </form>
+    <p>Pas encore de compte ? <a href="signup.html">Créer un compte</a></p>
+  </main>
 
-  // Vérifier si l'utilisateur est déjà connecté
-  onAuthStateChanged(auth, user => {
-    if(user) {
-      window.location.href = "dashboard.html"; // Redirige vers dashboard
-    }
-  });
+  <footer>
+    📞 Contact : 
+    <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a> | 
+    <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
+  </footer>
 
-  loginBtn.addEventListener('click', () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
 
-    if(!email || !password) {
-      message.textContent = "Veuillez remplir tous les champs !";
-      message.style.color = "red";
-      return;
-    }
+  <script>
+    // 🔥 Config Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+      authDomain: "liaread.firebaseapp.com",
+      projectId: "liaread",
+      storageBucket: "liaread.firebasestorage.app",
+      messagingSenderId: "951394019167",
+      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+      measurementId: "G-63JN91LVV6"
+    };
 
-    // Persistance de connexion
-    setPersistence(auth, browserLocalPersistence)
-      .then(() => {
-        return signInWithEmailAndPassword(auth, email, password);
-      })
-      .then(userCredential => {
-        message.textContent = "✅ Connexion réussie ! Redirection...";
-        message.style.color = "green";
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const form = document.getElementById("loginForm");
+    const msg = document.getElementById("message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const rememberMe = document.getElementById("rememberMe").checked;
+
+      try {
+        // Choisir persistance
+        if (rememberMe) {
+          await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); 
+        } else {
+          await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+        }
+
+        // Connexion
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        if (!user.emailVerified) {
+          msg.style.color = "red";
+          msg.textContent = "⚠️ Vérifie ton email avant de te connecter.";
+          return;
+        }
+
+        msg.style.color = "green";
+        msg.textContent = "✅ Connexion réussie ! Redirection...";
+        
+        // Redirection vers un tableau de bord (à créer)
         setTimeout(() => {
           window.location.href = "dashboard.html";
         }, 1500);
-      })
-      .catch(error => {
-        message.textContent = "❌ " + error.message;
-        message.style.color = "red";
-      });
-  });
-</script>
 
+      } catch (error) {
+        msg.style.color = "red";
+        msg.textContent = "❌ " + error.message;
+      }
+    });
+  </script>
 </body>
     </html>
