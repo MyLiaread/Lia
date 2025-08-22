@@ -34,6 +34,8 @@
       font-weight:bold;
       font-size:14px;
       margin-left:5px;
+      cursor:pointer;
+      border:none;
     }
     main {
       padding:15px;
@@ -48,37 +50,6 @@
       margin:10px 0;
       color:#444;
     }
-    #myBooks {
-      margin-top:15px;
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap:12px;
-    }
-    .book-card {
-      background:white;
-      border-radius:12px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
-      padding:10px;
-      display:flex;
-      align-items:center;
-    }
-    .book-card img {
-      width:70px;
-      height:90px;
-      object-fit:cover;
-      border-radius:6px;
-      margin-right:10px;
-    }
-    .book-info h3 {
-      margin:0;
-      font-size:15px;
-      color:#4b0082;
-    }
-    .book-info p {
-      margin:3px 0 0;
-      font-size:13px;
-      color:#555;
-    }
     form {
       background:white;
       padding:15px;
@@ -92,7 +63,7 @@
       margin-top:10px;
       color:#333;
     }
-    form input, form textarea {
+    form input, form textarea, form select {
       width:100%;
       padding:8px;
       margin-top:5px;
@@ -118,12 +89,6 @@
       margin-top:10px;
       font-size:14px;
       text-align:center;
-    }
-    .empty {
-      grid-column:1/-1;
-      text-align:center;
-      font-style:italic;
-      color:#777;
     }
     footer {
       background:#4b0082;
@@ -166,11 +131,6 @@
   <main>
     <p id="welcome">Bienvenue cher auteur ✨</p>
 
-    <h2>Mes Livres Publiés</h2>
-    <div id="myBooks">
-      <p class="empty">⚠️ Cette section sera remplie manuellement par l’admin.</p>
-    </div>
-
     <h2>Soumettre un Livre</h2>
     <form id="bookForm" action="https://formsubmit.co/agodthanks@gmail.com" method="POST" enctype="multipart/form-data">
       <label>Titre :</label>
@@ -184,6 +144,19 @@
 
       <label>Prix (F CFA) :</label>
       <input type="number" name="prix" placeholder="Ex: 2500" required>
+
+      <!-- Nouvelle section catégorie -->
+      <label>Catégorie :</label>
+      <select name="categorie" required>
+        <option value="">-- Choisis une catégorie --</option>
+        <option value="Roman">Roman</option>
+        <option value="Poésie">Poésie</option>
+        <option value="Essai">Essai</option>
+        <option value="BD">BD</option>
+        <option value="Science-Fiction">Science-Fiction</option>
+        <option value="Fantastique">Fantastique</option>
+        <option value="Autre">Autre</option>
+      </select>
 
       <label>Couverture :</label>
       <input type="file" name="couverture" accept="image/*" required>
@@ -203,17 +176,19 @@
   <div id="popupMessage"></div>
 
   <footer>
-    📞 Contact : 
+    📞 Contact :
     <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a> | 
     <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- === Firebase auth persistence + onAuthStateChanged === -->
+  <!-- Firebase -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+    import { getAuth, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
+    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
       authDomain: "liaread.firebaseapp.com",
@@ -224,40 +199,22 @@
       measurementId: "G-63JN91LVV6"
     };
 
+    // Init
     const app = initializeApp(firebaseConfig);
-    try { getAnalytics(app); } catch (e) {}
-
+    const analytics = getAnalytics(app);
     const auth = getAuth(app);
 
-    setPersistence(auth, browserLocalPersistence).catch((err) => {
-      console.warn("Impossible de définir la persistance :", err);
-    });
+    // Persistance de connexion (reste connecté)
+    setPersistence(auth, browserLocalPersistence);
 
-    onAuthStateChanged(auth, (user) => {
-      const welcome = document.getElementById("welcome");
-      if (user) {
-        if (welcome) welcome.textContent = `Bienvenue, ${user.displayName || user.email} ✨`;
-      } else {
+    // Déconnexion
+    document.getElementById("logout").addEventListener("click", () => {
+      signOut(auth).then(() => {
         window.location.href = "login.html";
-      }
+      });
     });
 
-    const logoutBtn = document.getElementById("logout");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", async () => {
-        try {
-          await signOut(auth);
-          window.location.href = "login.html";
-        } catch (err) {
-          console.error("Erreur lors de la déconnexion :", err);
-          alert("Erreur lors de la déconnexion. Réessaie.");
-        }
-      });
-    }
-  </script>
-
-  <!-- === FormSubmit handling + popup === -->
-  <script>
+    // Gestion du formulaire
     const form = document.getElementById('bookForm');
     const popup = document.getElementById('popupMessage');
 
@@ -282,8 +239,11 @@
       })
       .then(response => {
         if (response.ok) {
-          showPopup("✅ Livre publié avec succès ! L'admin vous contactera bientôt.", true);
+          showPopup("✅ Livre publié avec succès ! Redirection en cours...", true);
           form.reset();
+          setTimeout(() => {
+            window.location.href = "submit.succes.html";
+          }, 5000);
         } else {
           throw new Error("Une erreur est survenue, veuillez réessayer.");
         }
