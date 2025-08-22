@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Inscription Auteur - Liaread</title>
+  <title>Signup Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Styles -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,68 +17,59 @@
       background:#4b0082;
       color:white;
       padding:15px;
-      text-align:center;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
     header h1 {
-      margin:0;
       font-size:20px;
-    }
-    header a {
-      display:block;
-      margin-top:5px;
-      color:#fff;
-      text-decoration:none;
-      font-size:14px;
+      margin:0;
+      cursor:pointer;
     }
     main {
+      padding:15px;
       max-width:400px;
-      margin:30px auto;
+      margin:20px auto;
       background:white;
-      padding:20px;
       border-radius:12px;
       box-shadow:0 2px 6px rgba(0,0,0,0.1);
     }
     h2 {
+      color:#333;
       text-align:center;
-      color:#4b0082;
     }
-    label {
+    form label {
       display:block;
-      margin-top:12px;
       font-size:14px;
+      margin-top:10px;
       color:#333;
     }
-    input {
+    form input {
       width:100%;
-      padding:10px;
+      padding:8px;
       margin-top:5px;
       border:1px solid #ccc;
       border-radius:6px;
     }
-    button {
-      margin-top:20px;
+    #submitBtn {
+      margin-top:15px;
       width:100%;
       background:#4b0082;
       color:white;
-      padding:12px;
+      padding:10px;
       border:none;
       border-radius:6px;
       font-size:16px;
       font-weight:bold;
       cursor:pointer;
     }
-    button:hover {
+    #submitBtn:hover {
       background:#360061;
     }
-    p {
-      text-align:center;
-      margin-top:15px;
+    #message {
+      margin-top:10px;
       font-size:14px;
-    }
-    p a {
-      color:#4b0082;
-      text-decoration:none;
-      font-weight:bold;
+      text-align:center;
     }
     footer {
       background:#4b0082;
@@ -92,40 +84,47 @@
       text-decoration:none;
       margin:0 5px;
     }
-    #message {
-      text-align:center;
-      margin-top:10px;
-      font-size:14px;
-      font-weight:bold;
+    .toggle-password {
+      margin-top:5px;
+      font-size:13px;
+      cursor:pointer;
+      color:#4b0082;
+      text-decoration:underline;
     }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>Liaread</h1>
-    <a href="index.html">🏠 Retour à l’accueil</a>
+    <h1 onclick="location.href='index.html'">Liaread</h1>
   </header>
 
   <main>
     <h2>Créer un compte auteur</h2>
     <form id="signupForm">
-      <label>Nom d’auteur :</label>
-      <input type="text" id="penName" placeholder="Ex: DarkWriter" required>
+      <label>Nom complet :</label>
+      <input type="text" id="fullName" placeholder="Ex: Alice Dupont" required>
 
-      <label>Vrai nom :</label>
-      <input type="text" id="realName" placeholder="Ex: Jean Kossi" required>
+      <label>Nom d'auteur / Pseudo :</label>
+      <input type="text" id="authorName" placeholder="Ex: AliceD" required>
 
       <label>Email :</label>
-      <input type="email" id="email" placeholder="exemple@mail.com" required>
+      <input type="email" id="email" placeholder="Ex: alice@mail.com" required>
 
       <label>Mot de passe :</label>
-      <input type="password" id="password" placeholder="********" required>
+      <input type="password" id="password" placeholder="6 caractères minimum" required>
+      <span class="toggle-password" id="togglePassword">Afficher / Masquer</span>
 
-      <button type="submit">📖 S’inscrire</button>
+      <label>
+        <input type="checkbox" id="persistence"> Rester connecté
+      </label>
+
+      <button type="submit" id="submitBtn">Créer un compte</button>
       <p id="message"></p>
     </form>
-    <p>Déjà un compte ? <a href="login.html">Se connecter</a></p>
+
+    <p style="text-align:center; margin-top:15px;">
+      Déjà un compte ? <a href="login.html" style="color:#4b0082; text-decoration:underline;">Se connecter</a>
+    </p>
   </main>
 
   <footer>
@@ -134,61 +133,76 @@
     <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- Firebase App -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <script>
-    // 🔥 Config Firebase (la tienne déjà fournie)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
-      authDomain: "liaread.firebaseapp.com",
-      projectId: "liaread",
-      storageBucket: "liaread.firebasestorage.app",
-      messagingSenderId: "951394019167",
-      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
-      measurementId: "G-63JN91LVV6"
-    };
+    const firebaseConfig = {  
+      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",  
+      authDomain: "liaread.firebaseapp.com",  
+      projectId: "liaread",  
+      storageBucket: "liaread.firebasestorage.app",  
+      messagingSenderId: "951394019167",  
+      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",  
+      measurementId: "G-63JN91LVV6"  
+    };  
 
-    // Initialiser Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    const form = document.getElementById("signupForm");
-    const msg = document.getElementById("message");
+    const signupForm = document.getElementById('signupForm');
+    const message = document.getElementById('message');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const persistenceCheckbox = document.getElementById('persistence');
 
-    form.addEventListener("submit", async (e) => {
+    togglePassword.addEventListener('click', () => {
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    });
+
+    signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const fullName = document.getElementById('fullName').value.trim();
+      const authorName = document.getElementById('authorName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = passwordInput.value;
 
-      const penName = document.getElementById("penName").value;
-      const realName = document.getElementById("realName").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      if(password.length < 6){
+        message.textContent = "❌ Le mot de passe doit contenir au moins 6 caractères";
+        message.style.color = "red";
+        return;
+      }
 
       try {
+        // Persistance
+        await setPersistence(auth, persistenceCheckbox.checked ? browserLocalPersistence : browserSessionPersistence);
+
         // Créer compte
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Ajouter dans Firestore
-        await db.collection("users").doc(user.uid).set({
-          penName,
-          realName,
+        // Ajouter à Firestore
+        await addDoc(collection(db, "users"), {
+          uid: user.uid,
+          fullName,
+          authorName,
           email,
           createdAt: new Date()
         });
 
-        // Envoyer email de vérification
-        await user.sendEmailVerification();
+        message.textContent = "✅ Compte créé avec succès ! Redirection...";
+        message.style.color = "green";
 
-        msg.style.color = "green";
-        msg.textContent = "✅ Compte créé ! Vérifie ton email pour activer ton compte.";
-        form.reset();
-      } catch (error) {
-        msg.style.color = "red";
-        msg.textContent = "❌ " + error.message;
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 3000);
+
+      } catch(error){
+        message.textContent = "❌ " + error.message;
+        message.style.color = "red";
       }
     });
   </script>
