@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Connexion Auteur - Liaread</title>
+  <title>Login Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Styles -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,78 +17,59 @@
       background:#4b0082;
       color:white;
       padding:15px;
-      text-align:center;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
     header h1 {
-      margin:0;
       font-size:20px;
-    }
-    header a {
-      display:block;
-      margin-top:5px;
-      color:#fff;
-      text-decoration:none;
-      font-size:14px;
+      margin:0;
+      cursor:pointer;
     }
     main {
+      padding:15px;
       max-width:400px;
-      margin:30px auto;
+      margin:20px auto;
       background:white;
-      padding:20px;
       border-radius:12px;
       box-shadow:0 2px 6px rgba(0,0,0,0.1);
     }
     h2 {
+      color:#333;
       text-align:center;
-      color:#4b0082;
     }
-    label {
+    form label {
       display:block;
-      margin-top:12px;
       font-size:14px;
+      margin-top:10px;
       color:#333;
     }
-    input[type="email"], input[type="password"] {
+    form input {
       width:100%;
-      padding:10px;
+      padding:8px;
       margin-top:5px;
       border:1px solid #ccc;
       border-radius:6px;
     }
-    .checkbox-container {
-      margin-top:10px;
-      display:flex;
-      align-items:center;
-      font-size:14px;
-      color:#333;
-    }
-    .checkbox-container input {
-      margin-right:8px;
-    }
-    button {
-      margin-top:20px;
+    #submitBtn {
+      margin-top:15px;
       width:100%;
       background:#4b0082;
       color:white;
-      padding:12px;
+      padding:10px;
       border:none;
       border-radius:6px;
       font-size:16px;
       font-weight:bold;
       cursor:pointer;
     }
-    button:hover {
+    #submitBtn:hover {
       background:#360061;
     }
-    p {
-      text-align:center;
-      margin-top:15px;
+    #message {
+      margin-top:10px;
       font-size:14px;
-    }
-    p a {
-      color:#4b0082;
-      text-decoration:none;
-      font-weight:bold;
+      text-align:center;
     }
     footer {
       background:#4b0082;
@@ -102,39 +84,41 @@
       text-decoration:none;
       margin:0 5px;
     }
-    #message {
-      text-align:center;
-      margin-top:10px;
-      font-size:14px;
-      font-weight:bold;
+    .toggle-password {
+      margin-top:5px;
+      font-size:13px;
+      cursor:pointer;
+      color:#4b0082;
+      text-decoration:underline;
     }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>Liaread</h1>
-    <a href="index.html">🏠 Retour à l’accueil</a>
+    <h1 onclick="location.href='index.html'">Liaread</h1>
   </header>
 
   <main>
-    <h2>Connexion Auteur</h2>
+    <h2>Se connecter</h2>
     <form id="loginForm">
       <label>Email :</label>
-      <input type="email" id="email" placeholder="exemple@mail.com" required>
+      <input type="email" id="email" placeholder="Ex: alice@mail.com" required>
 
       <label>Mot de passe :</label>
-      <input type="password" id="password" placeholder="********" required>
+      <input type="password" id="password" placeholder="Votre mot de passe" required>
+      <span class="toggle-password" id="togglePassword">Afficher / Masquer</span>
 
-      <div class="checkbox-container">
-        <input type="checkbox" id="rememberMe">
-        <label for="rememberMe">Rester connecté</label>
-      </div>
+      <label>
+        <input type="checkbox" id="persistence"> Rester connecté
+      </label>
 
-      <button type="submit">🔑 Se connecter</button>
+      <button type="submit" id="submitBtn">Se connecter</button>
       <p id="message"></p>
     </form>
-    <p>Pas encore de compte ? <a href="signup.html">Créer un compte</a></p>
+
+    <p style="text-align:center; margin-top:15px;">
+      Pas encore de compte ? <a href="signup.html" style="color:#4b0082; text-decoration:underline;">Créer un compte</a>
+    </p>
   </main>
 
   <footer>
@@ -143,66 +127,57 @@
     <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- Firebase App -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <script>
-    // 🔥 Config Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
-      authDomain: "liaread.firebaseapp.com",
-      projectId: "liaread",
-      storageBucket: "liaread.firebasestorage.app",
-      messagingSenderId: "951394019167",
-      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
-      measurementId: "G-63JN91LVV6"
-    };
+    const firebaseConfig = {  
+      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",  
+      authDomain: "liaread.firebaseapp.com",  
+      projectId: "liaread",  
+      storageBucket: "liaread.firebasestorage.app",  
+      messagingSenderId: "951394019167",  
+      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",  
+      measurementId: "G-63JN91LVV6"  
+    };  
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    const form = document.getElementById("loginForm");
-    const msg = document.getElementById("message");
+    const loginForm = document.getElementById('loginForm');
+    const message = document.getElementById('message');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const persistenceCheckbox = document.getElementById('persistence');
 
-    form.addEventListener("submit", async (e) => {
+    togglePassword.addEventListener('click', () => {
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const rememberMe = document.getElementById("rememberMe").checked;
+      const email = document.getElementById('email').value.trim();
+      const password = passwordInput.value;
 
       try {
-        // Choisir persistance
-        if (rememberMe) {
-          await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); 
-        } else {
-          await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
-        }
+        await setPersistence(auth, persistenceCheckbox.checked ? browserLocalPersistence : browserSessionPersistence);
 
-        // Connexion
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        if (!user.emailVerified) {
-          msg.style.color = "red";
-          msg.textContent = "⚠️ Vérifie ton email avant de te connecter.";
-          return;
-        }
+        message.textContent = "✅ Connexion réussie ! Redirection...";
+        message.style.color = "green";
 
-        msg.style.color = "green";
-        msg.textContent = "✅ Connexion réussie ! Redirection...";
-        
-        // Redirection vers un tableau de bord (à créer)
         setTimeout(() => {
           window.location.href = "dashboard.html";
-        }, 1500);
+        }, 2000);
 
-      } catch (error) {
-        msg.style.color = "red";
-        msg.textContent = "❌ " + error.message;
+      } catch(error){
+        message.textContent = "❌ " + error.message;
+        message.style.color = "red";
       }
     });
   </script>
 </body>
-    </html>
+  </html>
