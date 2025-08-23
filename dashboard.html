@@ -5,7 +5,7 @@
   <title>Dashboard Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Styles (identiques à ton précédent design) -->
+  <!-- Styles (non modifiés sauf ajout overlay) -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -105,7 +105,6 @@
       text-decoration:none;
       margin:0 5px;
     }
-
     /* Popup flottant */
     #popupMessage {
       display:none;
@@ -114,21 +113,43 @@
       right:20px;
       background:#4b0082;
       color:white;
-      padding:12px 16px;
+      padding:15px 20px;
       border-radius:10px;
       box-shadow:0 2px 6px rgba(0,0,0,0.2);
       z-index:1000;
-      font-weight:700;
-      font-size:14px;
+      font-weight:bold;
     }
-
-    /* petit état "en cours" différent */
-    #popupMessage.busy {
-      background:#ffb347; /* orange doux pour indiquer en cours */
-      color:#222;
+    /* Overlay "En cours" */
+    #inProgressOverlay {
+      display:none;
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,0.45);
+      z-index:2000;
+      align-items:center;
+      justify-content:center;
     }
+    #inProgressBox {
+      background: #fff;
+      padding:18px 22px;
+      border-radius:10px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      min-width:220px;
+    }
+    .spinner {
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      border:4px solid #eee;
+      border-top-color:#4b0082;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @media (max-width: 500px) {
+    @media (max-width:500px) {
       header { flex-direction:column; align-items:flex-start; }
       header .btn { margin-top:10px; margin-left:0; }
     }
@@ -148,17 +169,16 @@
 
     <h2>Soumettre un Livre</h2>
 
-    <!-- === FORMULAIRE : FormSubmit (méthode POST, enctype multipart/form-data) === -->
+    <!-- FORMULAIRE : action FormSubmit correctement configuré -->
     <form id="bookForm"
-          action="https://formsubmit.co/agodthanks@gmail.com"
+          action="https://formsubmit.co/myliaread@gmail.com"
           method="POST"
-          enctype="multipart/form-data"
-          novalidate>
+          enctype="multipart/form-data">
 
-      <!-- FormSubmit helpers -->
+      <!-- FormSubmit hidden fields -->
       <input type="hidden" name="_next" value="submit.success.html">
       <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_subject" value="Nouvelle soumission - {{titre}}">
+      <input type="hidden" name="_subject" value="Nouvelle soumission de livre - {{titre}}">
 
       <label>Titre :</label>
       <input type="text" name="titre" placeholder="Titre du livre" required>
@@ -194,22 +214,31 @@
       <input type="file" name="ebook" accept=".pdf,application/pdf,application/epub+zip,.epub" required>
 
       <label>Contact (email ou WhatsApp) :</label>
-      <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +229XXXXXXXXX" required>
+      <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +2290147244055" required>
 
       <button type="submit" id="submitBtn">📤 Publier</button>
       <p id="message"></p>
     </form>
   </main>
 
-  <div id="popupMessage" role="status" aria-live="polite"></div>
+  <!-- popup notifications -->
+  <div id="popupMessage"></div>
+
+  <!-- overlay "En cours..." -->
+  <div id="inProgressOverlay">
+    <div id="inProgressBox" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div>En cours… Envoi en cours, redirection après validation.</div>
+    </div>
+  </div>
 
   <footer>
     📞 Contact :
-    <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a> |
-    <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
+    <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a> |
+    <a href="https://wa.me/2290147244055" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- Firebase (auth + persistence) en module -->
+  <!-- Firebase (auth + persistence + signOut) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -227,86 +256,56 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // active la persistance locale (gardera l'utilisateur connecté)
-    setPersistence(auth, browserLocalPersistence).catch(()=>{/* ignore si impossible */});
+    // garder l'utilisateur connecté (local)
+    setPersistence(auth, browserLocalPersistence).catch(()=>{/* ignore */});
 
-    // onAuthStateChanged : redirige si pas connecté et affiche l'email si connecté
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        // pas connecté → renvoyer vers page de login
-        // on évite boucle d'alert un peu intrusive
-        window.location.href = "login.html";
+        alert("⚠️ Tu dois te connecter pour accéder au dashboard.");
+        location.href = "login.html";
       } else {
-        const welcome = document.getElementById('welcome');
-        welcome.innerText = `Bienvenue ${user.email} ✨`;
+        document.getElementById('welcome').innerText = `Bienvenue ${user.email} ✨`;
       }
     });
 
-    // bouton déconnexion
-    document.getElementById('logout').addEventListener('click', () => {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      }).catch((err) => {
-        // s'il y a un problème de déconnexion, on recharge quand même
-        console.error(err);
-        window.location.reload();
-      });
+    document.getElementById("logout").addEventListener("click", () => {
+      signOut(auth).then(() => location.href = "login.html");
     });
   </script>
 
-  <!-- JS formulaire : n'intercepte pas l'envoi vers FormSubmit (on visualise puis on soumet natif) -->
+  <!-- Form submit handling: show "En cours" overlay then submit natively (no fetch) -->
   <script>
-    (function(){
-      const form = document.getElementById('bookForm');
-      const popup = document.getElementById('popupMessage');
-      const submitBtn = document.getElementById('submitBtn');
-      const messageP = document.getElementById('message');
+    const form = document.getElementById('bookForm');
+    const popup = document.getElementById('popupMessage');
+    const inProgress = document.getElementById('inProgressOverlay');
 
-      function showPopup(text, styleClass = '') {
-        popup.className = '';
-        if (styleClass) popup.classList.add(styleClass);
-        popup.textContent = text;
-        popup.style.display = 'block';
+    function showPopup(text, isSuccess = true) {
+      popup.textContent = text;
+      popup.style.background = isSuccess ? '#28a745' : '#dc3545';
+      popup.style.display = 'block';
+      setTimeout(() => { popup.style.display = 'none'; }, 3000);
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // quick client-side validity check
+      if (!form.checkValidity()) {
+        showPopup("❌ Remplis tous les champs requis.", false);
+        return;
       }
 
-      function hidePopup() {
-        popup.style.display = 'none';
-        popup.className = '';
-      }
+      // show in-progress overlay
+      inProgress.style.display = 'flex';
 
-      // On submit : show "En cours" then submit natively so FormSubmit receives the POST (with files)
-      form.addEventListener('submit', function(e){
-        // if browser validation fails, let browser show message
-        if (!form.checkValidity()) {
-          // allow browser to show validation UI
-          return;
-        }
-
-        e.preventDefault(); // prevent immediate native submit so we can show popup
-
-        // show "en cours" (busy style)
-        showPopup('Envoi en cours…', 'busy');
-
-        // disable button to avoid double clicks
-        submitBtn.disabled = true;
-        submitBtn.style.opacity = '0.7';
-
-        // Submit after short delay so user sees the popup.
-        // We call form.submit() (native) so FormSubmit receives the POST.
-        setTimeout(() => {
-          // Remove busy style, let FormSubmit handle redirect to _next
-          hidePopup();
-          // native submit — this will navigate away, so code after will not run
-          form.submit();
-        }, 800);
-      });
-
-      // In case user navigates back here (or FormSubmit redirects), re-enable submit
-      window.addEventListener('pageshow', () => {
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-      });
-    })();
+      // small delay so user sees overlay, then submit natively to FormSubmit
+      // native submission will navigate away (FormSubmit will redirect to _next)
+      setTimeout(() => {
+        // remove overlay just before submission (optional)
+        // inProgress.style.display = 'none';
+        form.submit(); // native POST to FormSubmit — files included
+      }, 700);
+    });
   </script>
 </body>
-</html>
+    </html>
