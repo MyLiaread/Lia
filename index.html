@@ -1,41 +1,36 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiaRead</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiaRead</title>
+<link rel="stylesheet" href="style.css">
 
-    <!-- SDK Fedapay -->
-    <script src="https://checkout.fedapay.com/fedapay-checkout.js"></script>
+<!-- SDK Fedapay -->
+<script src="https://checkout.fedapay.com/fedapay-checkout.js"></script>
 
-    <!-- SDK Firebase (compat) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+<!-- SDK Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 </head>
 <body>
-<header>
-    <div class="brand-block">
-        <!-- Lia stylisée façon "compte de fées" + texte de bienvenue -->
-        <div class="lia-name" onclick="location.href='index.html'">
-            Lia<span class="lia-accent">✧</span>
-        </div>
-        <div class="welcome-text">Bienvenue dans l'univers Lia — des histoires qui réchauffent le cœur ✨</div>
-    </div>
 
-    <!-- menu trois points -->
-    <div class="menu-dots" id="menuDots" aria-haspopup="true" aria-expanded="false">
-        <button id="dotsBtn" aria-label="Ouvrir menu">…</button>
-        <div id="dotsDropdown" class="dots-dropdown" role="menu" aria-hidden="true">
-            <a href="signup.html" role="menuitem">Créer un compte auteur</a>
-            <a href="dashboard.html" role="menuitem">Mon compte</a>
-            <a href="mailto:myliaread@gmail.com" role="menuitem">Aide</a>
-            <a href="best.sellers.html" role="menuitem">Lire</a>
-        </div>
-    </div>
+<header>
+    <h1>LiaRead</h1>
+    <span class="menu-toggle">⋯</span>
+    <nav class="dropdown-menu">
+        <a href="signup.html">Créer un compte auteur</a>
+        <a href="dashboard.html">Mon compte</a>
+        <a href="mailto:myliaread@gmail.com">Aide</a>
+        <a href="best.sellers.html">Lire</a>
+    </nav>
 </header>
+
+<section class="welcome">
+    <p>Bienvenue sur LiaRead, votre bibliothèque enchantée ✨</p>
+</section>
 
 <section class="search-section">
     <input type="text" id="search" placeholder="Rechercher un livre...">
@@ -55,97 +50,42 @@
     <button data-cat="fantastique">Fantastique</button>
 </section>
 
-<!-- CAROUSEL : POPULAIRES -->
-<section class="carousel-section">
-  <h2 class="carousel-title">Populaires</h2>
-  <div class="books-row" id="popularRow">
-    <div class="book" data-cat="roman">
-        <div class="cover-wrap">
-            <img src="couverture_aime-moi.jpg" alt="Couverture — Aime moi" class="cover">
-        </div>
-        <h3>Aime moi</h3>
-        <p class="price">Prix: 2500 XOF</p>
-        <div class="card-actions">
+<section class="carousel-section" id="populaires">
+    <h2>Populaires</h2>
+    <div class="carousel" id="carousel-populaires">
+        <!-- Exemple livre -->
+        <div class="book" data-cat="roman">
+            <h3>Aime moi</h3>
+            <img src="couverture_aime-moi.jpg" alt="Aime moi">
+            <p>Prix: 2500 XOF</p>
             <button class="fedapay-button" data-link="https://me.fedapay.com/56clJ3ZK">Acheter</button>
             <button class="popup-button" data-popup="popup-aime-moi">Lire un extrait</button>
         </div>
+        <!-- Ajouter d'autres livres ici -->
     </div>
-
-    <div class="book" data-cat="romantique">
-        <div class="cover-wrap">
-            <img src="couverture_amour-eternel.jpg" alt="Couverture — Amour Eternel" class="cover">
-        </div>
-        <h3>Amour Eternel</h3>
-        <p class="price">Prix: 3000 XOF</p>
-        <div class="card-actions">
-            <button class="fedapay-button" data-link="#">Acheter</button>
-            <button class="popup-button" data-popup="popup-amour-eternel">Lire un extrait</button>
-        </div>
-    </div>
-
-    <div class="book" data-cat="fantastique">
-        <div class="cover-wrap">
-            <img src="couverture_magie-noire.jpg" alt="Couverture — Magie Noire" class="cover">
-        </div>
-        <h3>Magie Noire</h3>
-        <p class="price">Prix: 3500 XOF</p>
-        <div class="card-actions">
-            <button class="fedapay-button" data-link="#">Acheter</button>
-            <button class="popup-button" data-popup="popup-magie-noire">Lire un extrait</button>
-        </div>
-    </div>
-
-    <div class="book" data-cat="aventure">
-        <div class="cover-wrap">
-            <img src="couverture_explorateurs.jpg" alt="Couverture — Explorateurs du Temps" class="cover">
-        </div>
-        <h3>Explorateurs du Temps</h3>
-        <p class="price">Prix: 4000 XOF</p>
-        <div class="card-actions">
-            <button class="fedapay-button" data-link="#">Acheter</button>
-            <button class="popup-button" data-popup="popup-explorateurs">Lire un extrait</button>
-        </div>
-    </div>
-
-    <div class="book" data-cat="roman">
-        <div class="cover-wrap">
-            <img src="https://drive.google.com/uc?export=view&id=1-8pRk9eTGo7n050Fvo-AVewmsnoyJGPS" alt="Couverture du livre" class="cover">
-        </div>
-        <h3>l'amour voit clair</h3>
-        <p class="author">Auteur: GwenA</p>
-        <p class="price">Prix: 1500 XOF</p>
-        <div class="card-actions">
-            <button class="fedapay-button" data-link="#">Acheter</button>
-            <button class="popup-button" data-popup="popup-lamour-voit-clair">Lire un extrait</button>
-        </div>
-    </div>
-  </div>
 </section>
 
-<!-- CAROUSEL : NOUVEAU (vide pour compléter) -->
-<section class="carousel-section">
-  <h2 class="carousel-title">Nouveau</h2>
-  <div class="books-row" id="newRow">
-    <!-- espace vide pour que tu complètes plus tard -->
-  </div>
+<section class="carousel-section" id="nouveaux">
+    <h2>Nouveaux</h2>
+    <div class="carousel" id="carousel-nouveaux">
+        <!-- Laisse vide pour compléter après -->
+    </div>
 </section>
 
-<!-- CAROUSEL : DÉCOUVERTE (vide pour compléter) -->
-<section class="carousel-section">
-  <h2 class="carousel-title">Découverte</h2>
-  <div class="books-row" id="discoverRow">
-    <!-- espace vide pour que tu complètes plus tard -->
-  </div>
+<section class="carousel-section" id="decouverte">
+    <h2>Découverte</h2>
+    <div class="carousel" id="carousel-decouverte">
+        <!-- Laisse vide pour compléter après -->
+    </div>
 </section>
 
-<!-- footer -->
 <footer>
     <p>Email: <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a></p>
     <p>WhatsApp: <a href="https://wa.me/2290147244055" target="_blank">+2290147244055</a></p>
 </footer>
 
 <script>
-    // === Firebase config (compat) - inchangé ===
+    // Configuration Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
         authDomain: "liaread.firebaseapp.com",
@@ -160,23 +100,27 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // === Categories filter (behaviour preserved) ===
+    // Menu déroulant
+    const menuToggle = document.querySelector('.menu-toggle');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    menuToggle.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('active');
+    });
+
+    // Filtrer par catégorie
     const catButtons = document.querySelectorAll('.categories button');
     const books = document.querySelectorAll('.book');
     catButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const cat = btn.dataset.cat;
             books.forEach(book => {
-                if(cat === 'all' || book.dataset.cat === cat) {
-                    book.style.display = 'block';
-                } else {
-                    book.style.display = 'none';
-                }
+                if(cat === 'all' || book.dataset.cat === cat) book.style.display = 'block';
+                else book.style.display = 'none';
             });
         });
     });
 
-    // === Search (behaviour preserved) ===
+    // Recherche
     const searchInput = document.getElementById('search');
     searchInput.addEventListener('input', () => {
         const value = searchInput.value.toLowerCase();
@@ -187,129 +131,49 @@
         });
     });
 
-    // === Fedapay buttons (same behaviour) ===
+    // Fedapay Checkout
     document.querySelectorAll('.fedapay-button').forEach(btn => {
         btn.addEventListener('click', () => {
             const link = btn.dataset.link;
-            if(link && link!=='#') {
-                window.open(link, '_blank');
-            } else {
-                alert('Lien de paiement non défini.');
-            }
+            if(link && link!=='#') window.open(link, '_blank');
+            else alert('Lien de paiement non défini.');
         });
     });
 
-    // === Dots menu (three points) ===
-    const dotsBtn = document.getElementById('dotsBtn');
-    const dotsDropdown = document.getElementById('dotsDropdown');
-
-    dotsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const hidden = dotsDropdown.getAttribute('aria-hidden') === 'true';
-        dotsDropdown.setAttribute('aria-hidden', hidden ? 'false' : 'true');
-        document.getElementById('menuDots').setAttribute('aria-expanded', hidden ? 'true' : 'false');
-    });
-
-    // close dropdown when clicking outside, but don't close if clicking inside dropdown
-    dotsDropdown.addEventListener('click', (e) => e.stopPropagation());
-    document.addEventListener('click', () => {
-        dotsDropdown.setAttribute('aria-hidden', 'true');
-        document.getElementById('menuDots').setAttribute('aria-expanded', 'false');
-    });
-
-    // === Popups handling: load popups.html once, then display template matching data-popup ===
-    let popupsDoc = null;
-    async function loadPopupsDoc() {
-        if(popupsDoc) return popupsDoc;
-        try {
-            const res = await fetch('popups.html', {cache: "no-store"});
-            const text = await res.text();
-            const parser = new DOMParser();
-            popupsDoc = parser.parseFromString(text, 'text/html');
-            return popupsDoc;
-        } catch (err) {
-            alert('Impossible de charger les popups : ' + err.message);
-            throw err;
-        }
-    }
-
-    async function showPopupFromTemplate(templateId) {
-        try {
-            const doc = await loadPopupsDoc();
-            const tpl = doc.getElementById(templateId);
-            if(!tpl) {
-                alert('Popup introuvable : ' + templateId);
-                return;
-            }
-            const clone = tpl.content.cloneNode(true);
-            // create overlay wrapper in current page
-            const overlay = document.createElement('div');
-            overlay.className = 'popup-overlay';
-            overlay.style.display = 'flex';
-            overlay.appendChild(clone);
-
-            // hook close button
-            const closeBtn = overlay.querySelector('.popup-close');
-            if(closeBtn) closeBtn.addEventListener('click', () => overlay.remove());
-
-            // close when clicking outside content
-            overlay.addEventListener('click', (e) => {
-                if(e.target === overlay) overlay.remove();
-            });
-
-            // close on ESC
-            document.addEventListener('keydown', function escHandler(ev) {
-                if(ev.key === 'Escape') {
-                    overlay.remove();
-                    document.removeEventListener('keydown', escHandler);
-                }
-            });
-
-            document.body.appendChild(overlay);
-        } catch(err) {
-            console.error(err);
-        }
-    }
-
-    // attach to popup buttons (each has data-popup attribute)
+    // Ouvrir popups via popups.html
     document.querySelectorAll('.popup-button').forEach(btn => {
         btn.addEventListener('click', () => {
             const popupId = btn.dataset.popup;
-            if(popupId) {
-                showPopupFromTemplate(popupId);
-            }
+            window.open('popups.html#' + popupId, '_blank', 'width=500,height=600');
         });
     });
 
-    // Optional: enable horizontal dragging with mouse for .books-row
-    function enableDragScroll(container) {
+    // Simple carrousel scrollable avec le doigt
+    document.querySelectorAll('.carousel').forEach(carousel => {
         let isDown = false;
         let startX;
         let scrollLeft;
-        container.addEventListener('mousedown', (e) => {
-            isDown = true;
-            container.classList.add('active-drag');
-            startX = e.pageX - container.offsetLeft;
-            scrollLeft = container.scrollLeft;
-        });
-        container.addEventListener('mouseleave', () => {
-            isDown = false;
-            container.classList.remove('active-drag');
-        });
-        container.addEventListener('mouseup', () => {
-            isDown = false;
-            container.classList.remove('active-drag');
-        });
-        container.addEventListener('mousemove', (e) => {
+        carousel.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - carousel.offsetLeft; scrollLeft = carousel.scrollLeft; });
+        carousel.addEventListener('mouseleave', () => isDown = false);
+        carousel.addEventListener('mouseup', () => isDown = false);
+        carousel.addEventListener('mousemove', e => {
             if(!isDown) return;
             e.preventDefault();
-            const x = e.pageX - container.offsetLeft;
-            const walk = (x - startX) * 1; // scroll-fast multiplier
-            container.scrollLeft = scrollLeft - walk;
+            const x = e.pageX - carousel.offsetLeft;
+            const walk = (x - startX) * 2;
+            carousel.scrollLeft = scrollLeft - walk;
         });
-    }
+        // Touch devices
+        let startTouchX, startScrollLeft;
+        carousel.addEventListener('touchstart', e => { startTouchX = e.touches[0].pageX; startScrollLeft = carousel.scrollLeft; });
+        carousel.addEventListener('touchmove', e => {
+            const x = e.touches[0].pageX;
+            const walk = (x - startTouchX) * 2;
+            carousel.scrollLeft = startScrollLeft - walk;
+        });
+    });
 
-    document.querySelectorAll('.books-row').forEach(row => enableDragScroll(row));
 </script>
+
 </body>
     </html>
