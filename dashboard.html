@@ -22,8 +22,10 @@
       align-items:center;
     }
     header h1 {
-      font-size:18px;
+      font-size:22px;
+      font-family: "Brush Script MT", cursive;
       margin:0;
+      letter-spacing: 1px;
     }
     header .btn {
       background:white;
@@ -47,6 +49,7 @@
       font-weight:bold;
       margin:10px 0;
       color:#444;
+      font-family: "Brush Script MT", cursive;
     }
     form {
       background:white;
@@ -101,7 +104,6 @@
       text-decoration:none;
       margin:0 5px;
     }
-
     /* Popup flottant */
     #popupMessage {
       display:none;
@@ -116,44 +118,41 @@
       z-index:1000;
       font-weight:bold;
     }
-
-    /* Overlay "en cours" */
+    /* Overlay "En cours" */
     #overlay {
       display:none;
       position:fixed;
       top:0; left:0;
       width:100%; height:100%;
-      background:rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.8);
       z-index:2000;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      flex-direction:column;
+      text-align:center;
     }
-    .spinner {
-      border: 6px solid #f3f3f3;
+    #overlay .spinner {
+      margin-top:25%;
+      border: 6px solid #ccc;
       border-top: 6px solid #4b0082;
       border-radius: 50%;
       width: 60px;
       height: 60px;
       animation: spin 1s linear infinite;
-      margin-bottom:15px;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      display:inline-block;
     }
     #overlay p {
-      font-size:16px;
-      font-weight:bold;
+      font-family:"Brush Script MT", cursive;
+      font-size:18px;
       color:#4b0082;
-      font-family:'Cursive', sans-serif;
+      margin-top:10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>📚 Dashboard Auteur</h1>
+    <h1>Lia</h1>
     <div>
       <a href="index.html" class="btn">🏠 Accueil</a>
       <button id="logout" class="btn">🚪 Déconnexion</button>
@@ -168,8 +167,7 @@
           action="https://formsubmit.co/myliaread@gmail.com"
           method="POST"
           enctype="multipart/form-data">
-      
-      <!-- Redirection et captcha -->
+      <!-- Redirection après succès -->
       <input type="hidden" name="_next" value="submit.success.html">
       <input type="hidden" name="_captcha" value="false">
 
@@ -214,22 +212,23 @@
     </form>
   </main>
 
-  <!-- Overlay "en cours" -->
+  <!-- Overlay "En cours" -->
   <div id="overlay">
     <div class="spinner"></div>
     <p>En cours...</p>
   </div>
 
+  <!-- Popup flottant -->
   <div id="popupMessage"></div>
 
   <footer>
-    📞 Contact : 
-    <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a> | 
+    📞 Contact :
+    <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a> |
     <a href="https://wa.me/2290147244055" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- Firebase -->
   <script type="module">
+    // Firebase config
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
@@ -244,10 +243,10 @@
     };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    setPersistence(auth, browserLocalPersistence); // persistance locale
-  </script>
 
-  <script>
+    // Persistance de connexion
+    setPersistence(auth, browserLocalPersistence);
+
     const form = document.getElementById('bookForm');
     const popup = document.getElementById('popupMessage');
     const overlay = document.getElementById('overlay');
@@ -261,9 +260,9 @@
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
-      overlay.style.display = "flex"; // affichage overlay
-
+      overlay.style.display = 'block';
       const formData = new FormData(form);
+
       fetch(form.action, {
         method: "POST",
         body: formData,
@@ -273,16 +272,17 @@
         if (response.ok) {
           showPopup("✅ Livre publié avec succès ! L'admin vous contactera bientôt.", true);
           form.reset();
-          setTimeout(() => { window.location.href = "submit.success.html"; }, 3000);
+          setTimeout(() => {
+            overlay.style.display = 'none';
+            window.location.href = "submit.success.html";
+          }, 3000);
         } else {
           throw new Error("Une erreur est survenue, veuillez réessayer.");
         }
       })
       .catch(error => {
+        overlay.style.display = 'none';
         showPopup(`❌ ${error.message}`, false);
-      })
-      .finally(() => {
-        overlay.style.display = "none";
       });
     });
 
@@ -291,4 +291,4 @@
     });
   </script>
 </body>
-    </html>
+</html>
