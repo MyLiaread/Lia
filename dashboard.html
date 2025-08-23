@@ -2,369 +2,161 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Styles (inchangés / identiques à l'original) -->
+  <title>Dashboard Auteur - LiaRead</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background:#f9f9f9;
-      margin:0;
-      padding:0;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
     }
     header {
-      background:#4b0082;
-      color:white;
-      padding:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    header h1 {
-      font-size:18px;
-      margin:0;
-    }
-    header .btn {
-      background:white;
-      color:#4b0082;
-      padding:8px 12px;
-      border-radius:6px;
-      text-decoration:none;
-      font-weight:bold;
-      font-size:14px;
-      margin-left:5px;
-    }
-    main {
-      padding:15px;
+      background: #6a0dad;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
     }
     h2 {
-      margin-top:25px;
-      color:#333;
-      font-size:18px;
+      margin: 10px 0;
     }
-    #welcome {
-      font-weight:bold;
-      margin:10px 0;
-      color:#444;
+    .container {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    #myBooks {
-      margin-top:15px;
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap:12px;
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
     }
-    .book-card {
-      background:white;
-      border-radius:12px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
-      padding:10px;
-      display:flex;
-      align-items:center;
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
     }
-    .book-card img {
-      width:70px;
-      height:90px;
-      object-fit:cover;
-      border-radius:6px;
-      margin-right:10px;
+    button {
+      background: #6a0dad;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
     }
-    .book-info h3 {
-      margin:0;
-      font-size:15px;
-      color:#4b0082;
-    }
-    .book-info p {
-      margin:3px 0 0;
-      font-size:13px;
-      color:#555;
-    }
-    form {
-      background:white;
-      padding:15px;
-      border-radius:12px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
-      margin-top:20px;
-    }
-    form label {
-      display:block;
-      font-size:14px;
-      margin-top:10px;
-      color:#333;
-    }
-    form input, form textarea {
-      width:100%;
-      padding:8px;
-      margin-top:5px;
-      border:1px solid #ccc;
-      border-radius:6px;
-    }
-    #submitBtn {
-      margin-top:15px;
-      width:100%;
-      background:#4b0082;
-      color:white;
-      padding:10px;
-      border:none;
-      border-radius:6px;
-      font-size:16px;
-      font-weight:bold;
-      cursor:pointer;
-    }
-    #submitBtn:hover {
-      background:#360061;
-    }
-    #message {
-      margin-top:10px;
-      font-size:14px;
-      text-align:center;
-    }
-    .empty {
-      grid-column:1/-1;
-      text-align:center;
-      font-style:italic;
-      color:#777;
+    button:hover {
+      background: #580aab;
     }
     footer {
-      background:#4b0082;
-      color:white;
-      padding:15px;
-      text-align:center;
-      margin-top:30px;
-      font-size:14px;
-    }
-    footer a {
-      color:#fff;
-      text-decoration:none;
-      margin:0 5px;
-    }
-
-    /* Overlay minimal "en cours" */
-    #fs-overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.45);
-      z-index: 9999;
-    }
-    #fs-overlay .box {
-      background: transparent;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-    }
-    .fs-spinner {
-      width:36px;
-      height:36px;
-      border-radius:50%;
-      border:4px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
-      animation: fs-spin 1s linear infinite;
-    }
-    .fs-text {
+      text-align: center;
+      padding: 15px;
+      background: #222;
       color: #fff;
-      font-weight:700;
-      letter-spacing:0.4px;
-      text-transform: lowercase;
+      margin-top: 20px;
     }
-    @keyframes fs-spin { to { transform: rotate(360deg); } }
-
-    /* small responsive niceties (unchanged) */
-    @media (max-width: 500px) {
-      header { flex-direction: column; align-items: flex-start; }
-      header .btn { margin-top: 10px; margin-left: 0; }
+    /* Overlay */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+      color: #fff;
+      font-size: 18px;
+    }
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #6a0dad;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>📚 Dashboard Auteur</h1>
-    <div>
-      <a href="index.html" class="btn">🏠 Accueil</a>
-      <button id="logout" class="btn">🚪 Déconnexion</button>
-    </div>
+    <h2>Tableau de Bord Auteur</h2>
   </header>
 
-  <main>
-    <p id="welcome">Bienvenue cher auteur ✨</p>
+  <div class="container">
+    <h3>Soumettre un Livre</h3>
 
-    <h2>Soumettre un Livre</h2>
-    <!-- IMPORTANT : action FormSubmit doit être ton email actif (myliaread@gmail.com) -->
-    <form id="bookForm" action="https://formsubmit.co/myliaread@gmail.com" method="POST" enctype="multipart/form-data">
-      <label>Titre :</label>
-      <input type="text" name="titre" placeholder="Titre du livre" required>
+    <!-- FORMULAIRE FormSubmit -->
+    <form id="bookForm"
+          action="https://formsubmit.co/myliaread@gmail.com"
+          method="POST"
+          enctype="multipart/form-data">
 
-      <label>Auteur / Pseudo :</label>
-      <input type="text" name="auteur" placeholder="Ton nom ou pseudo" required>
+      <!-- Empêcher le captcha -->
+      <input type="hidden" name="_captcha" value="false">
+      <!-- Redirection après succès -->
+      <input type="hidden" name="_next" value="success.html">
 
-      <label>Résumé du livre :</label>
-      <textarea name="resume" rows="4" placeholder="Décris ton livre en quelques lignes..." required></textarea>
+      <label for="title">Titre du livre :</label>
+      <input type="text" name="title" id="title" required>
 
-      <label>Prix (F CFA) :</label>
-      <input type="number" name="prix" placeholder="Ex: 2500" required>
+      <label for="author">Nom de l'auteur :</label>
+      <input type="text" name="author" id="author" required>
 
-      <label>Catégorie :</label>
-      <select name="categorie" required>
-        <option value="">--Choisir une catégorie--</option>
+      <label for="price">Prix :</label>
+      <input type="text" name="price" id="price" required>
+
+      <label for="category">Catégorie :</label>
+      <select name="category" id="category" required>
         <option value="roman">Roman</option>
         <option value="romantique">Romantique</option>
         <option value="milliardaire">Milliardaire</option>
         <option value="nouvelle">Nouvelle</option>
         <option value="conte">Conte</option>
-        <option value="vampire-loup-garou">Vampire / Loup-Garou</option>
+        <option value="vampire/loup-garou">Vampire / Loup-Garou</option>
         <option value="bd">BD</option>
         <option value="aventure">Aventure</option>
-        <option value="bien-etre">Bien-être</option>
+        <option value="bien-être">Bien-être</option>
         <option value="fantastique">Fantastique</option>
       </select>
 
-      <label>Couverture :</label>
-      <input type="file" name="couverture" accept="image/*" required>
+      <label for="cover">Couverture :</label>
+      <input type="file" name="cover" id="cover" accept="image/*" required>
 
-      <label>Fichier du livre :</label>
-      <input type="file" name="ebook" accept=".pdf,.epub" required>
+      <label for="bookFile">Fichier du livre :</label>
+      <input type="file" name="bookFile" id="bookFile" accept=".pdf,.epub" required>
 
-      <label>Contact (email ou WhatsApp) :</label>
-      <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +2290147244055" required>
-
-      <button type="submit" id="submitBtn">📤 Publier</button>
-      <p id="message"></p>
+      <button type="submit">Publier</button>
     </form>
-  </main>
+  </div>
 
-  <!-- Overlay minimal "en cours" (spinner + texte "en cours") -->
-  <div id="fs-overlay" aria-hidden="true">
-    <div class="box" role="status" aria-live="polite">
-      <div class="fs-spinner" aria-hidden="true"></div>
-      <div class="fs-text">en cours</div>
-    </div>
+  <!-- Overlay -->
+  <div id="overlay">
+    <div class="loader"></div>
+    <p>En cours</p>
   </div>
 
   <footer>
-    📞 Contact :
-    <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a> |
-    <a href="https://wa.me/2290147244055" target="_blank">WhatsApp</a>
+    <p>Contact : +2290147244055 | Email : myliaread@gmail.com</p>
   </footer>
 
-  <!-- Firebase + Auth (module import, persistence) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
-      authDomain: "liaread.firebaseapp.com",
-      projectId: "liaread",
-      storageBucket: "liaread.firebasestorage.app",
-      messagingSenderId: "951394019167",
-      appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
-      measurementId: "G-63JN91LVV6"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Garde l'utilisateur connecté localement
-    setPersistence(auth, browserLocalPersistence).catch(()=>{/* ignore */});
-
-    // Vérifie connexion et affiche email
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        alert("⚠️ Tu dois te connecter pour accéder au dashboard.");
-        location.href = "login.html";
-      } else {
-        document.getElementById('welcome').innerText = `Bienvenue ${user.email} ✨`;
-      }
-    });
-
-    // Déconnexion
-    document.getElementById('logout').addEventListener('click', () => {
-      signOut(auth).then(() => location.href = "login.html");
-    });
-  </script>
-
-  <!-- Script pour la soumission FormSubmit (native) + overlay minimal + gestion d'erreur -->
   <script>
-    (function() {
-      const form = document.getElementById('bookForm');
-      const overlay = document.getElementById('fs-overlay');
-      const messageEl = document.getElementById('message');
+    // Affiche l'overlay pendant l'envoi
+    const form = document.getElementById("bookForm");
+    const overlay = document.getElementById("overlay");
 
-      if (!form) return;
-
-      // Ensure the form attributes required by FormSubmit
-      try {
-        form.setAttribute('method', 'POST');
-        form.setAttribute('enctype', 'multipart/form-data');
-      } catch (e) { /* ignore */ }
-
-      // Ensure hidden fields exist
-      function ensureHidden(name, value) {
-        if (!form.querySelector(`input[name="${name}"]`)) {
-          const i = document.createElement('input');
-          i.type = 'hidden';
-          i.name = name;
-          i.value = value;
-          form.appendChild(i);
-        } else {
-          // update value to be safe
-          form.querySelector(`input[name="${name}"]`).value = value;
-        }
-      }
-      ensureHidden('_next', 'submit.success.html');
-      ensureHidden('_captcha', 'false');
-      ensureHidden('_subject', 'Nouvelle soumission de livre - Liaread');
-
-      // Show overlay
-      function showOverlay() {
-        overlay.style.display = 'flex';
-        overlay.setAttribute('aria-hidden','false');
-      }
-      function hideOverlay() {
-        overlay.style.display = 'none';
-        overlay.setAttribute('aria-hidden','true');
-      }
-
-      // Submit handler (capture phase to avoid other handlers interfering)
-      form.addEventListener('submit', function(e) {
-        // prevent other handlers that might use fetch
-        try { e.stopImmediatePropagation(); } catch (err) {}
-        e.preventDefault();
-
-        // Clear previous messages
-        messageEl.innerText = '';
-
-        // Browser built-in validity check
-        if (!form.checkValidity()) {
-          form.reportValidity();
-          return;
-        }
-
-        showOverlay();
-
-        // Submit nativement — this will navigate away if FormSubmit succeeds
-        // Keep overlay visible while browser navigates.
-        // If for any reason navigation doesn't happen (FormSubmit blocked or error),
-        // hide overlay after 25s and show error message.
-        let fallbackTimer = setTimeout(() => {
-          hideOverlay();
-          messageEl.style.color = 'red';
-          messageEl.innerText = '❌ Envoi introuvable — vérifie ta connexion ou l\'activation FormSubmit (confirme l\'email).';
-        }, 25000); // 25 seconds fallback
-
-        try {
-          form.submit(); // native POST to FormSubmit (files included)
-        } catch (err) {
-          clearTimeout(fallbackTimer);
-          hideOverlay();
-          messageEl.style.color = 'red';
-          messageEl.innerText = '❌ Erreur lors de l\'envoi : ' + (err.message || err);
-        }
-      }, true); // use capture to preempt other listeners
-    })();
+    form.addEventListener("submit", function() {
+      overlay.style.display = "flex";
+    });
   </script>
 </body>
-  </html>
+</html>
