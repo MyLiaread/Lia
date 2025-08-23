@@ -1,233 +1,83 @@
-/* ===== GENERAL ===== */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f5f5f5;
-    color: #222;
-    overflow-x: hidden;
-}
-a {
-    text-decoration: none;
-    color: inherit;
-}
+/* style.css — ajusté pour 2 colonnes (rectangles verticaux) et sections Populaire / Découverte / Nouveau */
 
-/* ===== HEADER ===== */
-header {
-    background: #6a0dad;
-    color: white;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
+/* Global */
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; color:#222; }
+header { background:#6a0dad; color:white; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+.brand-block { display:flex; flex-direction:column; gap:6px; }
+.lia-name {
+  font-family: 'Segoe Script', 'Brush Script MT', cursive;
+  font-size:36px;
+  color:#fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
-header h1 {
-    font-family: "Lucida Calligraphy", cursive;
-    font-size: 28px;
-    margin: 0;
-    cursor: pointer;
-}
-header nav {
-    display: flex;
-    align-items: center;
-}
-.menu-toggle {
-    font-size: 28px;
-    cursor: pointer;
-    user-select: none;
-    margin-left: 15px;
-}
-.dropdown {
-    display: none;
-    position: absolute;
-    top: 70px;
-    right: 20px;
-    background: white;
-    color: #222;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    z-index: 100;
-    flex-direction: column;
-}
-.dropdown a {
-    padding: 12px 20px;
-    display: block;
-    color: #6a0dad;
-    font-weight: bold;
-}
-.dropdown a:hover {
-    background: #f0e6fb;
-}
+.lia-accent { font-size:18px; color:#ffeb8a; transform:translateY(-6px); }
+.welcome-text { font-size:13px; opacity:0.95; color:#f3e9ff; }
 
-/* ===== SEARCH ===== */
-.search-section {
-    padding: 10px 20px;
-    background: #eee;
+/* menu dots */
+.menu-dots { position:relative; }
+.menu-dots button { background:transparent; border:none; color:white; font-size:28px; cursor:pointer; padding:4px 8px; }
+.dots-dropdown {
+  position:absolute; right:0; top:40px; background:#fff; color:#222; border-radius:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.15); padding:8px 0; min-width:180px; display:flex; flex-direction:column; gap:6px; z-index:1200;
 }
-.search-section input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
+.dots-dropdown[aria-hidden="true"] { display:none; }
+.dots-dropdown a { padding:10px 14px; text-decoration:none; color:#222; font-weight:600; }
+.dots-dropdown a:hover { background:#f2f2f2; }
 
-/* ===== CATEGORIES ===== */
-.categories {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 10px 20px;
-    gap: 10px;
-}
-.categories button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    background: #6a0dad;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-.categories button:hover {
-    background: #4b007d;
-}
+/* search + categories */
+.search-section { padding:10px 20px; background:#eee; }
+.search-section input { width:100%; padding:10px; font-size:16px; border-radius:5px; border:1px solid #ccc; }
+.categories { display:flex; flex-wrap:wrap; padding:10px 20px; gap:10px; }
+.categories button { padding:8px 12px; border:none; border-radius:5px; background:#6a0dad; color:white; cursor:pointer; font-weight:700; }
+.categories button:hover { background:#4b007d; }
 
-/* ===== CAROUSELS ===== */
-.carousel {
-    margin: 20px 0;
-}
-.carousel-title {
-    padding: 0 20px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #6a0dad;
-    margin-bottom: 10px;
-}
-.carousel-track {
-    display: flex;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    gap: 15px;
-    padding-left: 20px;
-}
-.carousel-track::-webkit-scrollbar {
-    display: none;
-}
+/* section blocks */
+.section-block { padding:18px 20px; }
+.section-title { margin:0 0 12px; font-size:20px; color:#333; }
 
-/* ===== BOOK CARD ===== */
-.book {
-    min-width: 180px;
-    max-width: 180px;
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: transform 0.3s;
-}
-.book img {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 10px;
-}
-.book h3 {
-    margin: 0 0 5px 0;
-    font-size: 16px;
-    text-align: center;
-    color: #4b0082;
-}
-.book p {
-    font-size: 14px;
-    margin: 0 0 8px 0;
-    text-align: center;
-}
-.book button {
-    background: #6a0dad;
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 5px;
-    transition: background 0.3s;
-}
-.book button:hover {
-    background: #4b007d;
-}
+/* books grid: 2 columns desktop, responsive */
+.books-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:20px; }
+.book { background:white; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.06); overflow:hidden; display:flex; flex-direction:row; gap:12px; padding:12px; align-items:flex-start; min-height:140px; }
+/* layout: cover left, details right (rectangle vertical feel) */
+.cover-wrap { flex:0 0 40%; display:flex; align-items:center; justify-content:center; }
+.cover { width:100%; height:160px; object-fit:cover; border-radius:8px; }
+.small-cover { height:120px; } /* specifically for Aime-moi */
 
-/* ===== FOOTER ===== */
-footer {
-    text-align: center;
-    padding: 20px;
-    background: #222;
-    color: white;
-}
-footer a {
-    color: white;
-    font-weight: bold;
-}
+.book-body { flex:1 1 60%; display:flex; flex-direction:column; }
+.book h3 { margin:2px 0 8px; font-size:18px; color:#222; }
+.book .author { font-size:13px; color:#666; margin:0 0 8px; }
+.book .price { font-weight:700; color:#4b0082; margin:0 0 12px; }
 
-/* ===== POPUP ===== */
-.popup-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-.popup-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
-    position: relative;
-}
-.popup-content h3 {
-    margin-top: 0;
-}
-.popup-close {
-    position: absolute;
-    top: 10px; right: 10px;
-    background: #6a0dad;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 25px; height: 25px;
-    cursor: pointer;
-}
-.popup-close:hover {
-    background: #4b007d;
-}
+/* actions aligned bottom */
+.card-actions { margin-top:auto; display:flex; gap:8px; }
+.card-actions button { background:#6a0dad; color:white; border:none; padding:8px 10px; border-radius:6px; cursor:pointer; font-weight:700; }
+.card-actions button:hover { background:#4b007d; }
 
-/* ===== RESPONSIVE ===== */
-@media screen and (max-width: 768px) {
-    .carousel-track {
-        padding-left: 10px;
-        gap: 10px;
+/* footer */
+footer { text-align:center; padding:20px; background:#222; color:white; }
+
+/* popup overlay (from popups.html clones) */
+.popup-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index:2000; }
+.popup-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:520px; position:relative; }
+.popup-close { position:absolute; top:10px; right:10px; background:#6a0dad; color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; }
+
+/* responsive */
+@media (max-width:980px) {
+  .books-grid { grid-template-columns:repeat(2, 1fr); }
+  .cover { height:140px; }
+  .small-cover { height:110px; }
+}
+@media (max-width:620px) {
+  header { padding:14px; }
+  .lia-name { font-size:28px; }
+  .books-grid { grid-template-columns:1fr; gap:14px; }
+  .book { flex-direction:column; align-items:stretch; min-height:auto; }
+  .cover-wrap { flex:0 0 auto; }
+  .cover { height:220px; }
+  .small-cover { height:180px; }
+  .card-actions { justify-content:flex-start; }
     }
-    .book {
-        min-width: 140px;
-        max-width: 140px;
-        height: auto;
-    }
-    .book img {
-        height: 200px;
-    }
-    header h1 {
-        font-size: 24px;
-    }
-    .carousel-title {
-        font-size: 18px;
-    }
-  }
