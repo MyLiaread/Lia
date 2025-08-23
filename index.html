@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>LiaRead</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- SDK Fedapay -->
+    <script src="https://checkout.fedapay.com/fedapay-checkout.js"></script>
+
+    <!-- SDK Firebase (compat - inchangé) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+<header>
+    <div class="brand-block">
+        <div class="lia-name" onclick="location.href='index.html'">
+            Lia <span class="lia-accent">✧</span>
+        </div>
+        <div class="welcome-text">Bienvenue dans l'univers Lia — des histoires qui réchauffent le cœur ✨</div>
+    </div>
+
+    <div class="menu-dots" id="menuDots" aria-haspopup="true" aria-expanded="false" title="Menu">
+        <button id="dotsBtn" aria-label="Ouvrir menu">…</button>
+        <div id="dotsDropdown" class="dots-dropdown" role="menu" aria-hidden="true">
+            <a href="signup.html" role="menuitem">Créer un compte auteur</a>
+            <a href="dashboard.html" role="menuitem">Mon compte</a>
+            <a href="mailto:myliaread@gmail.com" role="menuitem">Aide</a>
+            <a href="best.sellers.html" role="menuitem">Lire</a>
+            <a href="all.livres.html" role="menuitem">Tous les livres</a>
+        </div>
+    </div>
+</header>
+
+<section class="search-section">
+    <input type="text" id="search" placeholder="Rechercher un livre...">
+</section>
+
+<section class="categories">
+    <button data-cat="all">Tous</button>
+    <button data-cat="roman">Roman</button>
+    <button data-cat="romantique">Romantique</button>
+    <button data-cat="milliardaire">Milliardaire</button>
+    <button data-cat="nouvelle">Nouvelle</button>
+    <button data-cat="conte">Conte</button>
+    <button data-cat="vampire-loup">Vampire/Loup-Garou</button>
+    <button data-cat="bd">BD</button>
+    <button data-cat="aventure">Aventure</button>
+    <button data-cat="bien-etre">Bien-être</button>
+    <button data-cat="fantastique">Fantastique</button>
+</section>
+
+<!-- POPULAIRE -->
+<section class="section-block">
+  <h2 class="section-title">Populaire</h2>
+  <div class="books-grid" id="popularBooks">
+    <div class="book" data-cat="roman">
+        <div class="cover-wrap">
+            <img src="couverture_aime-moi.jpg" alt="Couverture — Aime moi" class="cover small-cover">
+        </div>
+        <div class="book-body">
+          <h3>Aime moi</h3>
+          <p class="price">2500 XOF</p>
+          <div class="card-actions">
+            <button class="fedapay-button" data-link="https://me.fedapay.com/56clJ3ZK">Acheter</button>
+            <button class="popup-button" data-popup="popup-aime-moi">Lire un extrait</button>
+          </div>
+        </div>
+    </div>
+
+    <div class="book" data-cat="romantique">
+        <div class="cover-wrap">
+            <img src="couverture_amour-eternel.jpg" alt="Couverture — Amour Eternel" class="cover">
+        </div>
+        <div class="book-body">
+          <h3>Amour Eternel</h3>
+          <p class="price">3000 XOF</p>
+          <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-amour-eternel">Lire un extrait</button>
+          </div>
+        </div>
+    </div>
+  </div>
+</section>
+
+<!-- DECOUVERTE -->
+<section class="section-block">
+  <h2 class="section-title">Découverte</h2>
+  <div class="books-grid" id="discoverBooks">
+    <div class="book" data-cat="fantastique">
+        <div class="cover-wrap">
+            <img src="couverture_magie-noire.jpg" alt="Couverture — Magie Noire" class="cover">
+        </div>
+        <div class="book-body">
+          <h3>Magie Noire</h3>
+          <p class="price">3500 XOF</p>
+          <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-magie-noire">Lire un extrait</button>
+          </div>
+        </div>
+    </div>
+
+    <div class="book" data-cat="aventure">
+        <div class="cover-wrap">
+            <img src="couverture_explorateurs.jpg" alt="Couverture — Explorateurs du Temps" class="cover">
+        </div>
+        <div class="book-body">
+          <h3>Explorateurs du Temps</h3>
+          <p class="price">4000 XOF</p>
+          <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-explorateurs">Lire un extrait</button>
+          </div>
+        </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOUVEAU -->
+<section class="section-block">
+  <h2 class="section-title">Nouveau</h2>
+  <div class="books-grid" id="newBooks">
+    <div class="book" data-cat="roman">
+        <div class="cover-wrap">
+            <img src="https://drive.google.com/uc?export=view&id=1-8pRk9eTGo7n050Fvo-AVewmsnoyJGPS" alt="Couverture du livre" class="cover">
+        </div>
+        <div class="book-body">
+          <h3>l'amour voit clair</h3>
+          <p class="author">GwenA</p>
+          <p class="price">1500 XOF</p>
+          <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-lamour-voit-clair">Lire un extrait</button>
+          </div>
+        </div>
+    </div>
+
+    <!-- === NOUVEAU LIVRE AJOUTÉ DIRECTEMENT === -->
+    <div class="book" data-cat="nouvelle">
+        <div class="cover-wrap">
+            <img src="couverture_echos_silence.jpg" alt="Couverture — Les Échos du Silence" class="cover">
+        </div>
+        <div class="book-body">
+          <h3>Les Échos du Silence</h3>
+          <p class="author">M. Kaboré</p>
+          <p class="price">2000 XOF</p>
+          <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-echos-du-silence">Lire un extrait</button>
+          </div>
+        </div>
+    </div>
+    <!-- === FIN DU NOUVEAU LIVRE === -->
+
+  </div>
+</section>
+
+<footer>
+    <p>Email: <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a></p>
+    <p>WhatsApp: <a href="https://wa.me/2290147244055" target="_blank">+2290147244055</a></p>
+</footer>
+
+<script>
+    // === Firebase config (compat) - inchangé ===
+    const firebaseConfig = {
+        apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
+        authDomain: "liaread.firebaseapp.com",
+        projectId: "liaread",
+        storageBucket: "liaread.firebasestorage.app",
+        messagingSenderId: "951394019167",
+        appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
+        measurementId: "G-63JN91LVV6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // === Categories filter (works across all sections) ===
+    const catButtons = document.querySelectorAll('.categories button');
+    const allBooks = document.querySelectorAll('.book');
+    catButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cat = btn.dataset.cat;
+            allBooks.forEach(book => {
+                if(cat === 'all' || book.dataset.cat === cat) {
+                    book.style.display = '';
+                } else {
+                    book.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // === Search across titles (works across all sections) ===
+    const searchInput = document.getElementById('search');
+    searchInput.addEventListener('input', () => {
+        const value = searchInput.value.toLowerCase();
+        allBooks.forEach(book => {
+            const titleEl = book.querySelector('h3');
+            const title = titleEl ? titleEl.textContent.toLowerCase() : '';
+            if(!value || title.includes(value)) book.style.display = '';
+            else book.style.display = 'none';
+        });
+    });
+
+    // === Fedapay buttons ===
+    document.querySelectorAll('.fedapay-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const link = btn.dataset.link;
+            if(link && link!=='#') {
+                window.open(link, '_blank');
+            } else {
+                alert('Lien de paiement non défini.');
+            }
+        });
+    });
+
+    // === Dots menu (three points) ===
+    const dotsBtn = document.getElementById('dotsBtn');
+    const dotsDropdown = document.getElementById('dotsDropdown');
+
+    dotsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const hidden = dotsDropdown.getAttribute('aria-hidden') === 'true';
+        dotsDropdown.setAttribute('aria-hidden', hidden ? 'false' : 'true');
+        document.getElementById('menuDots').setAttribute('aria-expanded', hidden ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', () => {
+        dotsDropdown.setAttribute('aria-hidden', 'true');
+        document.getElementById('menuDots').setAttribute('aria-expanded', 'false');
+    });
+
+    // === Popups handling: load popups.html once, then display the requested template ===
+    let popupsDoc = null;
+    async function loadPopupsDoc() {
+        if(popupsDoc) return popupsDoc;
+        try {
+            const res = await fetch('popups.html', {cache: "no-store"});
+            const text = await res.text();
+            const parser = new DOMParser();
+            popupsDoc = parser.parseFromString(text, 'text/html');
+            return popupsDoc;
+        } catch (err) {
+            alert('Impossible de charger les popups : ' + err.message);
+            throw err;
+        }
+    }
+
+    async function showPopupFromTemplate(templateId) {
+        try {
+            const doc = await loadPopupsDoc();
+            const tpl = doc.getElementById(templateId);
+            if(!tpl) {
+                alert('Popup introuvable : ' + templateId);
+                return;
+            }
+            const clone = tpl.content.cloneNode(true);
+            const overlay = document.createElement('div');
+            overlay.className = 'popup-overlay';
+            overlay.style.display = 'flex';
+            overlay.appendChild(clone);
+
+            const closeBtn = overlay.querySelector('.popup-close');
+            if(closeBtn) closeBtn.addEventListener('click', () => overlay.remove());
+            overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.remove(); });
+
+            document.body.appendChild(overlay);
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+    document.querySelectorAll('.popup-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const popupId = btn.dataset.popup;
+            if(popupId) showPopupFromTemplate(popupId);
+        });
+    });
+</script>
+</body>
+</html>
