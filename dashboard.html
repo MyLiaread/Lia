@@ -5,25 +5,133 @@
   <title>Dashboard Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Styles (inchangés) -->
+  <!-- Styles (identiques à ton précédent design) -->
   <style>
-    body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; }
-    header { background:#4b0082; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; }
-    header h1 { font-size:18px; margin:0; cursor:pointer; }
-    header .btn { background:white; color:#4b0082; padding:8px 12px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px; margin-left:5px; cursor:pointer; }
-    main { padding:15px; }
-    h2 { margin-top:25px; color:#333; font-size:18px; }
-    #welcome { font-weight:bold; margin:10px 0; color:#444; }
-    form { background:white; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px; }
-    form label { display:block; font-size:14px; margin-top:10px; color:#333; }
-    form input, form textarea, form select { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; }
-    #submitBtn { margin-top:15px; width:100%; background:#4b0082; color:white; padding:10px; border:none; border-radius:6px; font-size:16px; font-weight:bold; cursor:pointer; }
-    #submitBtn:hover { background:#360061; }
-    #message { margin-top:10px; font-size:14px; text-align:center; }
-    footer { background:#4b0082; color:white; padding:15px; text-align:center; margin-top:30px; font-size:14px; }
-    footer a { color:#fff; text-decoration:none; margin:0 5px; }
-    #popupMessage { display:none; position:fixed; top:20px; right:20px; background:#4b0082; color:white; padding:15px 20px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2); z-index:1000; font-weight:bold; }
-    @media (max-width:500px){ header { flex-direction:column; align-items:flex-start } header .btn { margin-top:10px; margin-left:0 } }
+    body {
+      font-family: Arial, sans-serif;
+      background:#f9f9f9;
+      margin:0;
+      padding:0;
+    }
+    header {
+      background:#4b0082;
+      color:white;
+      padding:15px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    header h1 {
+      font-size:18px;
+      margin:0;
+      cursor:pointer;
+    }
+    header .btn {
+      background:white;
+      color:#4b0082;
+      padding:8px 12px;
+      border-radius:6px;
+      text-decoration:none;
+      font-weight:bold;
+      font-size:14px;
+      margin-left:5px;
+      cursor:pointer;
+    }
+    main {
+      padding:15px;
+    }
+    h2 {
+      margin-top:25px;
+      color:#333;
+      font-size:18px;
+    }
+    #welcome {
+      font-weight:bold;
+      margin:10px 0;
+      color:#444;
+    }
+    form {
+      background:white;
+      padding:15px;
+      border-radius:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+      margin-top:20px;
+    }
+    form label {
+      display:block;
+      font-size:14px;
+      margin-top:10px;
+      color:#333;
+    }
+    form input, form textarea, form select {
+      width:100%;
+      padding:8px;
+      margin-top:5px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      box-sizing:border-box;
+    }
+    #submitBtn {
+      margin-top:15px;
+      width:100%;
+      background:#4b0082;
+      color:white;
+      padding:10px;
+      border:none;
+      border-radius:6px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    #submitBtn:hover {
+      background:#360061;
+    }
+    #message {
+      margin-top:10px;
+      font-size:14px;
+      text-align:center;
+    }
+    footer {
+      background:#4b0082;
+      color:white;
+      padding:15px;
+      text-align:center;
+      margin-top:30px;
+      font-size:14px;
+    }
+    footer a {
+      color:#fff;
+      text-decoration:none;
+      margin:0 5px;
+    }
+
+    /* Popup flottant */
+    #popupMessage {
+      display:none;
+      position:fixed;
+      top:20px;
+      right:20px;
+      background:#4b0082;
+      color:white;
+      padding:12px 16px;
+      border-radius:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.2);
+      z-index:1000;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    /* petit état "en cours" différent */
+    #popupMessage.busy {
+      background:#ffb347; /* orange doux pour indiquer en cours */
+      color:#222;
+    }
+
+    @media (max-width: 500px) {
+      header { flex-direction:column; align-items:flex-start; }
+      header .btn { margin-top:10px; margin-left:0; }
+    }
   </style>
 </head>
 <body>
@@ -40,17 +148,17 @@
 
     <h2>Soumettre un Livre</h2>
 
-    <!-- FORMULAIRE : action FormSubmit (inchangé) -->
+    <!-- === FORMULAIRE : FormSubmit (méthode POST, enctype multipart/form-data) === -->
     <form id="bookForm"
           action="https://formsubmit.co/agodthanks@gmail.com"
           method="POST"
-          enctype="multipart/form-data">
+          enctype="multipart/form-data"
+          novalidate>
 
-      <!-- hidden inputs for FormSubmit -->
-      <input type="hidden" name="_captcha" value="false">
-      <!-- redirect after successful submit -->
+      <!-- FormSubmit helpers -->
       <input type="hidden" name="_next" value="submit.success.html">
-      <input type="hidden" name="_subject" value="Nouvelle soumission de livre - {{titre}}">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="Nouvelle soumission - {{titre}}">
 
       <label>Titre :</label>
       <input type="text" name="titre" placeholder="Titre du livre" required>
@@ -72,10 +180,10 @@
         <option value="milliardaire">Milliardaire</option>
         <option value="nouvelle">Nouvelle</option>
         <option value="conte">Conte</option>
-        <option value="vampire/loup-garou">Vampire / Loup-Garou</option>
+        <option value="vampire-loup-garou">Vampire / Loup-Garou</option>
         <option value="bd">BD</option>
         <option value="aventure">Aventure</option>
-        <option value="bien-être">Bien-être</option>
+        <option value="bien-etre">Bien-être</option>
         <option value="fantastique">Fantastique</option>
       </select>
 
@@ -83,7 +191,7 @@
       <input type="file" name="couverture" accept="image/*" required>
 
       <label>Fichier du livre :</label>
-      <input type="file" name="ebook" accept=".pdf,.epub" required>
+      <input type="file" name="ebook" accept=".pdf,application/pdf,application/epub+zip,.epub" required>
 
       <label>Contact (email ou WhatsApp) :</label>
       <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +229XXXXXXXXX" required>
@@ -93,7 +201,7 @@
     </form>
   </main>
 
-  <div id="popupMessage"></div>
+  <div id="popupMessage" role="status" aria-live="polite"></div>
 
   <footer>
     📞 Contact :
@@ -101,7 +209,7 @@
     <a href="https://wa.me/2290199616039" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- Firebase (auth + persistence only) -->
+  <!-- Firebase (auth + persistence) en module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -115,61 +223,90 @@
       appId: "1:951394019167:web:86825d5ebff4d77807f8ea",
       measurementId: "G-63JN91LVV6"
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // définir persistance (garde connecté)
-    setPersistence(auth, browserLocalPersistence).catch(()=>{/* ignore */});
+    // active la persistance locale (gardera l'utilisateur connecté)
+    setPersistence(auth, browserLocalPersistence).catch(()=>{/* ignore si impossible */});
 
+    // onAuthStateChanged : redirige si pas connecté et affiche l'email si connecté
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        // si non connecté, renvoyer vers login
-        alert("⚠️ Tu dois te connecter pour accéder au dashboard.");
-        location.href = "login.html";
+        // pas connecté → renvoyer vers page de login
+        // on évite boucle d'alert un peu intrusive
+        window.location.href = "login.html";
       } else {
-        // afficher email dans le welcome
-        document.getElementById('welcome').innerText = `Bienvenue ${user.email} ✨`;
+        const welcome = document.getElementById('welcome');
+        welcome.innerText = `Bienvenue ${user.email} ✨`;
       }
     });
 
     // bouton déconnexion
-    document.getElementById("logout").addEventListener("click", () => {
-      signOut(auth).then(() => location.href = "login.html");
+    document.getElementById('logout').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      }).catch((err) => {
+        // s'il y a un problème de déconnexion, on recharge quand même
+        console.error(err);
+        window.location.reload();
+      });
     });
   </script>
 
-  <!-- JS pour afficher popup puis soumettre normalement (FormSubmit recevra l'email) -->
+  <!-- JS formulaire : n'intercepte pas l'envoi vers FormSubmit (on visualise puis on soumet natif) -->
   <script>
-    const form = document.getElementById('bookForm');
-    const popup = document.getElementById('popupMessage');
+    (function(){
+      const form = document.getElementById('bookForm');
+      const popup = document.getElementById('popupMessage');
+      const submitBtn = document.getElementById('submitBtn');
+      const messageP = document.getElementById('message');
 
-    function showPopup(text, isSuccess = true) {
-      popup.textContent = text;
-      popup.style.background = isSuccess ? '#28a745' : '#dc3545';
-      popup.style.display = 'block';
-      setTimeout(() => { popup.style.display = 'none'; }, 2500);
-    }
-
-    // IMPORTANT: on intercepte pour afficher un message, puis on appelle form.submit()
-    // form.submit() effectue un envoi réel POST natif (donc FormSubmit recevra les données).
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-
-      // petite validation côté client (optionnel)
-      if (!form.checkValidity()) {
-        showPopup("❌ Remplis tous les champs requis.", false);
-        return;
+      function showPopup(text, styleClass = '') {
+        popup.className = '';
+        if (styleClass) popup.classList.add(styleClass);
+        popup.textContent = text;
+        popup.style.display = 'block';
       }
 
-      showPopup("Envoi en cours…", true);
+      function hidePopup() {
+        popup.style.display = 'none';
+        popup.className = '';
+      }
 
-      // Laisser un tout petit délai visuel, puis soumettre réellement (n'enclenche pas l'événement submit)
-      setTimeout(() => {
-        // this will perform a normal POST with files to FormSubmit
-        form.submit();
-        // FormSubmit redirigera vers _next (submit.success.html) automatiquement
-      }, 800);
-    });
+      // On submit : show "En cours" then submit natively so FormSubmit receives the POST (with files)
+      form.addEventListener('submit', function(e){
+        // if browser validation fails, let browser show message
+        if (!form.checkValidity()) {
+          // allow browser to show validation UI
+          return;
+        }
+
+        e.preventDefault(); // prevent immediate native submit so we can show popup
+
+        // show "en cours" (busy style)
+        showPopup('Envoi en cours…', 'busy');
+
+        // disable button to avoid double clicks
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+
+        // Submit after short delay so user sees the popup.
+        // We call form.submit() (native) so FormSubmit receives the POST.
+        setTimeout(() => {
+          // Remove busy style, let FormSubmit handle redirect to _next
+          hidePopup();
+          // native submit — this will navigate away, so code after will not run
+          form.submit();
+        }, 800);
+      });
+
+      // In case user navigates back here (or FormSubmit redirects), re-enable submit
+      window.addEventListener('pageshow', () => {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+      });
+    })();
   </script>
 </body>
-  </html>
+</html>
