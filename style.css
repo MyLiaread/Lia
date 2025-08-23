@@ -1,22 +1,233 @@
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; color:#222; }
-header { background:#6a0dad; color:white; padding:20px; display:flex; justify-content:space-between; align-items:center; position:relative; }
-header h1 { margin:0; font-family: 'Brush Script MT', cursive; font-size:2em; }
-.menu-dots { cursor:pointer; font-size:2em; }
-.dropdown-menu { display:none; position:absolute; top:60px; right:20px; background:#fff; color:#222; border-radius:10px; padding:10px; flex-direction:column; min-width:150px; box-shadow:0 4px 8px rgba(0,0,0,0.2); z-index:100; }
-.dropdown-menu.show { display:flex; }
-.dropdown-menu a { text-decoration:none; color:#6a0dad; margin:5px 0; font-weight:bold; }
-.welcome { text-align:center; padding:20px; font-size:1.2em; }
-.carousel-section { padding:20px; }
-.carousel-section h2 { margin-bottom:10px; }
-.carousel { display:flex; gap:15px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px; }
-.carousel::-webkit-scrollbar { height:8px; }
-.carousel::-webkit-scrollbar-thumb { background:#6a0dad; border-radius:4px; }
-.book { flex:0 0 auto; width:180px; background:white; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1); padding:10px; scroll-snap-align:start; display:flex; flex-direction:column; align-items:center; transition:transform 0.3s; }
-.book:hover { transform:scale(1.05); }
-.book img { width:150px; height:220px; object-fit:cover; border-radius:5px; }
-.book h3 { margin:10px 0 5px 0; font-size:1em; text-align:center; }
-.book p { margin:0; font-size:0.9em; text-align:center; }
-.book button { background:#6a0dad; color:white; border:none; padding:6px 10px; border-radius:5px; cursor:pointer; margin-top:5px; width:100%; font-size:0.9em; }
-.book button:hover { background:#4b007d; }
-footer { text-align:center; padding:20px; background:#222; color:white; font-size:0.9em; }
-footer a { color:white; text-decoration:none; }
+/* ===== GENERAL ===== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f5f5;
+    color: #222;
+    overflow-x: hidden;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ===== HEADER ===== */
+header {
+    background: #6a0dad;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+header h1 {
+    font-family: "Lucida Calligraphy", cursive;
+    font-size: 28px;
+    margin: 0;
+    cursor: pointer;
+}
+header nav {
+    display: flex;
+    align-items: center;
+}
+.menu-toggle {
+    font-size: 28px;
+    cursor: pointer;
+    user-select: none;
+    margin-left: 15px;
+}
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    background: white;
+    color: #222;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 100;
+    flex-direction: column;
+}
+.dropdown a {
+    padding: 12px 20px;
+    display: block;
+    color: #6a0dad;
+    font-weight: bold;
+}
+.dropdown a:hover {
+    background: #f0e6fb;
+}
+
+/* ===== SEARCH ===== */
+.search-section {
+    padding: 10px 20px;
+    background: #eee;
+}
+.search-section input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* ===== CATEGORIES ===== */
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px 20px;
+    gap: 10px;
+}
+.categories button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    background: #6a0dad;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.categories button:hover {
+    background: #4b007d;
+}
+
+/* ===== CAROUSELS ===== */
+.carousel {
+    margin: 20px 0;
+}
+.carousel-title {
+    padding: 0 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #6a0dad;
+    margin-bottom: 10px;
+}
+.carousel-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 15px;
+    padding-left: 20px;
+}
+.carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===== BOOK CARD ===== */
+.book {
+    min-width: 180px;
+    max-width: 180px;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s;
+}
+.book img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+.book h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    text-align: center;
+    color: #4b0082;
+}
+.book p {
+    font-size: 14px;
+    margin: 0 0 8px 0;
+    text-align: center;
+}
+.book button {
+    background: #6a0dad;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 5px;
+    transition: background 0.3s;
+}
+.book button:hover {
+    background: #4b007d;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #222;
+    color: white;
+}
+footer a {
+    color: white;
+    font-weight: bold;
+}
+
+/* ===== POPUP ===== */
+.popup-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+.popup-content h3 {
+    margin-top: 0;
+}
+.popup-close {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: #6a0dad;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px; height: 25px;
+    cursor: pointer;
+}
+.popup-close:hover {
+    background: #4b007d;
+}
+
+/* ===== RESPONSIVE ===== */
+@media screen and (max-width: 768px) {
+    .carousel-track {
+        padding-left: 10px;
+        gap: 10px;
+    }
+    .book {
+        min-width: 140px;
+        max-width: 140px;
+        height: auto;
+    }
+    .book img {
+        height: 200px;
+    }
+    header h1 {
+        font-size: 24px;
+    }
+    .carousel-title {
+        font-size: 18px;
+    }
+  }
