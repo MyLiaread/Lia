@@ -1,52 +1,41 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>LiaRead</title>
     <link rel="stylesheet" href="style.css">
 
     <!-- SDK Fedapay -->
     <script src="https://checkout.fedapay.com/fedapay-checkout.js"></script>
 
-    <!-- SDK Firebase -->
+    <!-- SDK Firebase (compat - inchangé) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-
-    <style>
-        body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f5f5f5; color:#222; }
-        header { background:#6a0dad; color:white; padding:20px; display:flex; justify-content:space-between; align-items:center; }
-        header h1 { margin:0; }
-        header nav a { color:white; text-decoration:none; font-weight:bold; }
-        .search-section { padding:10px 20px; background:#eee; }
-        .search-section input { width:100%; padding:10px; font-size:16px; border-radius:5px; border:1px solid #ccc; }
-        .categories { display:flex; flex-wrap:wrap; padding:10px 20px; gap:10px; }
-        .categories button { padding:8px 12px; border:none; border-radius:5px; background:#6a0dad; color:white; cursor:pointer; }
-        .categories button:hover { background:#4b007d; }
-        #books { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; padding:20px; }
-        .book { background:white; padding:15px; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1); position:relative; }
-        .book h3 { margin-top:0; }
-        .book button { background:#6a0dad; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; margin-top:10px; }
-        .book button:hover { background:#4b007d; }
-        .share-buttons { position:absolute; top:10px; right:10px; display:flex; flex-direction:column; gap:5px; }
-        .share-buttons button { background:#eee; border:none; padding:5px; border-radius:50%; cursor:pointer; font-size:12px; }
-        footer { text-align:center; padding:20px; background:#222; color:white; }
-        /* Popup styles */
-        .popup-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center; z-index:1000; }
-        .popup-content { background:white; padding:20px; border-radius:10px; width:90%; max-width:500px; position:relative; }
-        .popup-content h3 { margin-top:0; }
-        .popup-close { position:absolute; top:10px; right:10px; background:#6a0dad; color:white; border:none; border-radius:50%; width:25px; height:25px; cursor:pointer; }
-        .popup-close:hover { background:#4b007d; }
-    </style>
 </head>
 <body>
 <header>
-    <h1>LiaRead</h1>
-    <nav>
-        <span class="create-account"><a href="signup.html">Créer un compte auteur</a></span>
-    </nav>
+    <div class="brand-block">
+        <!-- Lia stylisée façon "compte de fées" + petit texte de bienvenue -->
+        <div class="lia-name" onclick="location.href='index.html'">
+            Lia
+            <span class="lia-accent">✧</span>
+        </div>
+        <div class="welcome-text">Bienvenue dans l'univers Lia — des histoires qui réchauffent le cœur ✨</div>
+    </div>
+
+    <!-- Trois points menu (droite) -->
+    <div class="menu-dots" id="menuDots" aria-haspopup="true" aria-expanded="false" title="Menu">
+        <button id="dotsBtn" aria-label="Ouvrir menu">…</button>
+        <div id="dotsDropdown" class="dots-dropdown" role="menu" aria-hidden="true">
+            <a href="signup.html" role="menuitem">Créer un compte auteur</a>
+            <a href="dashboard.html" role="menuitem">Mon compte</a>
+            <a href="mailto:myliaread@gmail.com" role="menuitem">Aide</a>
+            <a href="best.sellers.html" role="menuitem">Lire</a>
+        </div>
+    </div>
 </header>
 
 <section class="search-section">
@@ -69,78 +58,76 @@
 
 <section id="books">
     <div class="book" data-cat="roman">
+        <div class="cover-wrap">
+            <img src="couverture_aime-moi.jpg" alt="Couverture — Aime moi" class="cover small-cover">
+        </div>
         <h3>Aime moi</h3>
-        <img src="couverture_aime-moi.jpg" alt="Couverture — Aime moi" style="max-width:100%;height:auto;">
-        <p>Prix: 2500 XOF</p>
-        <button class="fedapay-button" data-link="https://me.fedapay.com/56clJ3ZK">Acheter</button>
-        <button class="popup-button" data-extrait="Khelil, un chef d'entreprise respecté, ne s'attendait pas à ce qu'Ava, sa nouvelle stagiaire, bouleverse sa vie et son cœur. Entre regards furtifs et conversations intimes, l'amour commence à germer là où personne ne l'attend.">Lire un extrait</button>
-        <div class="share-buttons">
-            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button class="copy-link" title="Copier le lien du livre">🔗</button>
-        </div>
-    </div>
-    <div class="book" data-cat="romantique">
-        <h3>Amour Eternel</h3>
-        <p>Prix: 3000 XOF</p>
-        <button class="fedapay-button" data-link="#">Acheter</button>
-        <button class="popup-button" data-extrait="Une histoire d'amour qui traverse le temps et les épreuves.">Lire un extrait</button>
-        <div class="share-buttons">
-            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button class="copy-link" title="Copier le lien du livre">🔗</button>
-        </div>
-    </div>
-    <div class="book" data-cat="fantastique">
-        <h3>Magie Noire</h3>
-        <p>Prix: 3500 XOF</p>
-        <button class="fedapay-button" data-link="#">Acheter</button>
-        <button class="popup-button" data-extrait="Découvrez un univers où la magie noire domine et les héros luttent pour survivre.">Lire un extrait</button>
-        <div class="share-buttons">
-            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button class="copy-link" title="Copier le lien du livre">🔗</button>
-        </div>
-    </div>
-    <div class="book" data-cat="aventure">
-        <h3>Explorateurs du Temps</h3>
-        <p>Prix: 4000 XOF</p>
-        <button class="fedapay-button" data-link="#">Acheter</button>
-        <button class="popup-button" data-extrait="Quatre explorateurs voyagent à travers le temps et affrontent des dangers inimaginables.">Lire un extrait</button>
-        <div class="share-buttons">
-            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button class="copy-link" title="Copier le lien du livre">🔗</button>
+        <p class="price">Prix: 2500 XOF</p>
+        <div class="card-actions">
+            <button class="fedapay-button" data-link="https://me.fedapay.com/56clJ3ZK">Acheter</button>
+            <button class="popup-button" data-popup="popup-aime-moi">Lire un extrait</button>
         </div>
     </div>
 
-    <!-- Nouveau livre ajouté : l'amour voit clair -->
+    <div class="book" data-cat="romantique">
+        <div class="cover-wrap">
+            <img src="couverture_amour-eternel.jpg" alt="Couverture — Amour Eternel" class="cover">
+        </div>
+        <h3>Amour Eternel</h3>
+        <p class="price">Prix: 3000 XOF</p>
+        <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-amour-eternel">Lire un extrait</button>
+        </div>
+    </div>
+
+    <div class="book" data-cat="fantastique">
+        <div class="cover-wrap">
+            <img src="couverture_magie-noire.jpg" alt="Couverture — Magie Noire" class="cover">
+        </div>
+        <h3>Magie Noire</h3>
+        <p class="price">Prix: 3500 XOF</p>
+        <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-magie-noire">Lire un extrait</button>
+        </div>
+    </div>
+
+    <div class="book" data-cat="aventure">
+        <div class="cover-wrap">
+            <img src="couverture_explorateurs.jpg" alt="Couverture — Explorateurs du Temps" class="cover">
+        </div>
+        <h3>Explorateurs du Temps</h3>
+        <p class="price">Prix: 4000 XOF</p>
+        <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-explorateurs">Lire un extrait</button>
+        </div>
+    </div>
+
     <div class="book" data-cat="roman">
+        <div class="cover-wrap">
+            <img src="https://drive.google.com/uc?export=view&id=1-8pRk9eTGo7n050Fvo-AVewmsnoyJGPS" alt="Couverture du livre" class="cover">
+        </div>
         <h3>l'amour voit clair</h3>
-        <p>Auteur: GwenA</p>
-        <p>Prix: 1500 XOF</p>
-        <img src="https://drive.google.com/uc?export=view&id=1-8pRk9eTGo7n050Fvo-AVewmsnoyJGPS" alt="Couverture du livre" width="200">
-        <button class="fedapay-button" data-link="#">Acheter</button>
-        <button class="popup-button" data-extrait="Extrait fictif">Lire un extrait</button>
-        <div class="share-buttons">
-            <button onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://liaread.com','_blank')">F</button>
-            <button class="copy-link" title="Copier le lien du livre">🔗</button>
+        <p class="author">Auteur: GwenA</p>
+        <p class="price">Prix: 1500 XOF</p>
+        <div class="card-actions">
+            <button class="fedapay-button" data-link="#">Acheter</button>
+            <button class="popup-button" data-popup="popup-lamour-voit-clair">Lire un extrait</button>
         </div>
     </div>
 </section>
 
-<!-- Popup -->
-<div class="popup-overlay" id="popup">
-    <div class="popup-content">
-        <button class="popup-close" id="popup-close">&times;</button>
-        <h3>Extrait</h3>
-        <p id="popup-text"></p>
-    </div>
-</div>
+<!-- No inline popups here — will be loaded from popups.html when needed -->
 
 <footer>
-    <p>Email: <a href="mailto:agodthanks@gmail.com">agodthanks@gmail.com</a></p>
-    <p>WhatsApp: <a href="https://wa.me/2290199616039" target="_blank">+2290199616039</a></p>
+    <p>Email: <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a></p>
+    <p>WhatsApp: <a href="https://wa.me/2290147244055" target="_blank">+2290147244055</a></p>
 </footer>
 
 <script>
-    // Configuration Firebase
+    // === Firebase config (compat) - inchangé ===
     const firebaseConfig = {
         apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
         authDomain: "liaread.firebaseapp.com",
@@ -155,7 +142,7 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // Filtrer par catégorie
+    // === Categories filter (unchanged behaviour) ===
     const catButtons = document.querySelectorAll('.categories button');
     const books = document.querySelectorAll('.book');
     catButtons.forEach(btn => {
@@ -171,7 +158,7 @@
         });
     });
 
-    // Recherche
+    // === Search (unchanged behaviour) ===
     const searchInput = document.getElementById('search');
     searchInput.addEventListener('input', () => {
         const value = searchInput.value.toLowerCase();
@@ -182,20 +169,7 @@
         });
     });
 
-    // Popups
-    const popup = document.getElementById('popup');
-    const popupText = document.getElementById('popup-text');
-    const popupClose = document.getElementById('popup-close');
-    document.querySelectorAll('.popup-button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            popupText.textContent = btn.dataset.extrait;
-            popup.style.display = 'flex';
-        });
-    });
-    popupClose.addEventListener('click', () => popup.style.display='none');
-    popup.addEventListener('click', e => { if(e.target===popup) popup.style.display='none'; });
-
-    // Fedapay Checkout
+    // === Fedapay buttons (same behaviour) ===
     document.querySelectorAll('.fedapay-button').forEach(btn => {
         btn.addEventListener('click', () => {
             const link = btn.dataset.link;
@@ -207,71 +181,78 @@
         });
     });
 
-    // Fonction pour construire le lien de partage pour un livre (vers livre.html)
-    function buildShareUrlForBook(book) {
-        const title = book.querySelector('h3') ? book.querySelector('h3').textContent.trim() : '';
-        // chercher un paragraphe "Auteur: ..." si présent
-        let author = '';
-        const ps = book.querySelectorAll('p');
-        ps.forEach(p => {
-            const txt = p.textContent.trim();
-            if(txt.toLowerCase().startsWith('auteur')) author = txt.split(':').slice(1).join(':').trim();
-            else if(!author && txt.toLowerCase().startsWith('prix')) {
-                // ignore prix for author
-            }
-        });
-        // si auteur non trouvé, tenter un <p> qui ne soit pas le prix
-        if(!author) {
-            ps.forEach(p => {
-                const txt = p.textContent.trim();
-                if(!txt.toLowerCase().startsWith('prix') && !txt.toLowerCase().startsWith('auteur')) {
-                    // could be other info, but leave empty
-                }
-            });
+    // === Dots menu (three points) ===
+    const dotsBtn = document.getElementById('dotsBtn');
+    const dotsDropdown = document.getElementById('dotsDropdown');
+
+    dotsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const expanded = dotsDropdown.getAttribute('aria-hidden') === 'false';
+        dotsDropdown.setAttribute('aria-hidden', expanded ? 'true' : 'false');
+        document.getElementById('menuDots').setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    });
+
+    // close dropdown when clicking outside
+    document.addEventListener('click', () => {
+        dotsDropdown.setAttribute('aria-hidden', 'true');
+        document.getElementById('menuDots').setAttribute('aria-expanded', 'false');
+    });
+
+    // === Popups handling: load popups.html once, then display template matching data-popup ===
+    let popupsDoc = null;
+    async function loadPopupsDoc() {
+        if(popupsDoc) return popupsDoc;
+        try {
+            const res = await fetch('popups.html', {cache: "no-store"});
+            const text = await res.text();
+            const parser = new DOMParser();
+            popupsDoc = parser.parseFromString(text, 'text/html');
+            return popupsDoc;
+        } catch (err) {
+            alert('Impossible de charger les popups : ' + err.message);
+            throw err;
         }
-        // prix
-        let price = '';
-        ps.forEach(p => {
-            const txt = p.textContent.trim();
-            if(txt.toLowerCase().startsWith('prix')) price = txt.split(':').slice(1).join(':').trim();
-        });
-        // image
-        const imgEl = book.querySelector('img');
-        const img = imgEl ? imgEl.src : '';
-        // extrait
-        const extraitBtn = book.querySelector('.popup-button');
-        const extrait = extraitBtn ? extraitBtn.dataset.extrait || '' : '';
-
-        const params = new URLSearchParams();
-        if(title) params.set('titre', title);
-        if(author) params.set('auteur', author);
-        if(price) params.set('prix', price);
-        if(img) params.set('img', img);
-        if(extrait) params.set('extrait', extrait);
-
-        // construire URL absolue basée sur le répertoire actuel + livre.html
-        // ex: if current is https://domain/path/index.html -> baseDir = https://domain/path/
-        const loc = window.location;
-        const baseDir = loc.origin + loc.pathname.replace(/\/[^\/]*$/, '/');
-        return baseDir + 'livre.html?' + params.toString();
     }
 
-    // Copier le lien du livre quand on clique sur le bouton copy-link
-    document.querySelectorAll('.copy-link').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            const book = btn.closest('.book');
-            const url = buildShareUrlForBook(book);
-            try {
-                await navigator.clipboard.writeText(url);
-                // message simple : tu peux personnaliser ou remplacer par un tooltip
-                alert('Lien copié dans le presse-papier !\n' + url);
-            } catch (err) {
-                // fallback : sélectionner et informer l'utilisateur
-                prompt('Copie manuelle : sélectionne et copie ce lien', url);
+    async function showPopupFromTemplate(templateId) {
+        try {
+            const doc = await loadPopupsDoc();
+            const tpl = doc.getElementById(templateId);
+            if(!tpl) {
+                alert('Popup introuvable : ' + templateId);
+                return;
+            }
+            const clone = tpl.content.cloneNode(true);
+            // create overlay wrapper in current page
+            const overlay = document.createElement('div');
+            overlay.className = 'popup-overlay';
+            overlay.style.display = 'flex';
+            overlay.innerHTML = '';
+            overlay.appendChild(clone);
+
+            // hook close button
+            const closeBtn = overlay.querySelector('.popup-close');
+            if(closeBtn) closeBtn.addEventListener('click', () => overlay.remove());
+            // close when clicking outside content
+            overlay.addEventListener('click', (e) => {
+                if(e.target === overlay) overlay.remove();
+            });
+
+            document.body.appendChild(overlay);
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+    // attach to popup buttons (each has data-popup attribute)
+    document.querySelectorAll('.popup-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const popupId = btn.dataset.popup;
+            if(popupId) {
+                showPopupFromTemplate(popupId);
             }
         });
     });
-
 </script>
 </body>
-</html>
+    </html>
