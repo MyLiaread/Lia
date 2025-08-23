@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LiaRead</title>
     <link rel="stylesheet" href="style.css">
 
     <!-- SDK Fedapay -->
     <script src="https://checkout.fedapay.com/fedapay-checkout.js"></script>
 
-    <!-- SDK Firebase (compat - inchangé) -->
+    <!-- SDK Firebase (compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -18,16 +18,15 @@
 <body>
 <header>
     <div class="brand-block">
-        <!-- Lia stylisée façon "compte de fées" + petit texte de bienvenue -->
+        <!-- Lia stylisée façon "compte de fées" + texte de bienvenue -->
         <div class="lia-name" onclick="location.href='index.html'">
-            Lia
-            <span class="lia-accent">✧</span>
+            Lia<span class="lia-accent">✧</span>
         </div>
         <div class="welcome-text">Bienvenue dans l'univers Lia — des histoires qui réchauffent le cœur ✨</div>
     </div>
 
-    <!-- Trois points menu (droite) -->
-    <div class="menu-dots" id="menuDots" aria-haspopup="true" aria-expanded="false" title="Menu">
+    <!-- menu trois points -->
+    <div class="menu-dots" id="menuDots" aria-haspopup="true" aria-expanded="false">
         <button id="dotsBtn" aria-label="Ouvrir menu">…</button>
         <div id="dotsDropdown" class="dots-dropdown" role="menu" aria-hidden="true">
             <a href="signup.html" role="menuitem">Créer un compte auteur</a>
@@ -56,10 +55,13 @@
     <button data-cat="fantastique">Fantastique</button>
 </section>
 
-<section id="books">
+<!-- CAROUSEL : POPULAIRES -->
+<section class="carousel-section">
+  <h2 class="carousel-title">Populaires</h2>
+  <div class="books-row" id="popularRow">
     <div class="book" data-cat="roman">
         <div class="cover-wrap">
-            <img src="couverture_aime-moi.jpg" alt="Couverture — Aime moi" class="cover small-cover">
+            <img src="couverture_aime-moi.jpg" alt="Couverture — Aime moi" class="cover">
         </div>
         <h3>Aime moi</h3>
         <p class="price">Prix: 2500 XOF</p>
@@ -117,10 +119,26 @@
             <button class="popup-button" data-popup="popup-lamour-voit-clair">Lire un extrait</button>
         </div>
     </div>
+  </div>
 </section>
 
-<!-- No inline popups here — will be loaded from popups.html when needed -->
+<!-- CAROUSEL : NOUVEAU (vide pour compléter) -->
+<section class="carousel-section">
+  <h2 class="carousel-title">Nouveau</h2>
+  <div class="books-row" id="newRow">
+    <!-- espace vide pour que tu complètes plus tard -->
+  </div>
+</section>
 
+<!-- CAROUSEL : DÉCOUVERTE (vide pour compléter) -->
+<section class="carousel-section">
+  <h2 class="carousel-title">Découverte</h2>
+  <div class="books-row" id="discoverRow">
+    <!-- espace vide pour que tu complètes plus tard -->
+  </div>
+</section>
+
+<!-- footer -->
 <footer>
     <p>Email: <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a></p>
     <p>WhatsApp: <a href="https://wa.me/2290147244055" target="_blank">+2290147244055</a></p>
@@ -142,7 +160,7 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // === Categories filter (unchanged behaviour) ===
+    // === Categories filter (behaviour preserved) ===
     const catButtons = document.querySelectorAll('.categories button');
     const books = document.querySelectorAll('.book');
     catButtons.forEach(btn => {
@@ -158,7 +176,7 @@
         });
     });
 
-    // === Search (unchanged behaviour) ===
+    // === Search (behaviour preserved) ===
     const searchInput = document.getElementById('search');
     searchInput.addEventListener('input', () => {
         const value = searchInput.value.toLowerCase();
@@ -187,12 +205,13 @@
 
     dotsBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const expanded = dotsDropdown.getAttribute('aria-hidden') === 'false';
-        dotsDropdown.setAttribute('aria-hidden', expanded ? 'true' : 'false');
-        document.getElementById('menuDots').setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        const hidden = dotsDropdown.getAttribute('aria-hidden') === 'true';
+        dotsDropdown.setAttribute('aria-hidden', hidden ? 'false' : 'true');
+        document.getElementById('menuDots').setAttribute('aria-expanded', hidden ? 'true' : 'false');
     });
 
-    // close dropdown when clicking outside
+    // close dropdown when clicking outside, but don't close if clicking inside dropdown
+    dotsDropdown.addEventListener('click', (e) => e.stopPropagation());
     document.addEventListener('click', () => {
         dotsDropdown.setAttribute('aria-hidden', 'true');
         document.getElementById('menuDots').setAttribute('aria-expanded', 'false');
@@ -227,15 +246,23 @@
             const overlay = document.createElement('div');
             overlay.className = 'popup-overlay';
             overlay.style.display = 'flex';
-            overlay.innerHTML = '';
             overlay.appendChild(clone);
 
             // hook close button
             const closeBtn = overlay.querySelector('.popup-close');
             if(closeBtn) closeBtn.addEventListener('click', () => overlay.remove());
+
             // close when clicking outside content
             overlay.addEventListener('click', (e) => {
                 if(e.target === overlay) overlay.remove();
+            });
+
+            // close on ESC
+            document.addEventListener('keydown', function escHandler(ev) {
+                if(ev.key === 'Escape') {
+                    overlay.remove();
+                    document.removeEventListener('keydown', escHandler);
+                }
             });
 
             document.body.appendChild(overlay);
@@ -253,6 +280,36 @@
             }
         });
     });
+
+    // Optional: enable horizontal dragging with mouse for .books-row
+    function enableDragScroll(container) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        container.addEventListener('mousedown', (e) => {
+            isDown = true;
+            container.classList.add('active-drag');
+            startX = e.pageX - container.offsetLeft;
+            scrollLeft = container.scrollLeft;
+        });
+        container.addEventListener('mouseleave', () => {
+            isDown = false;
+            container.classList.remove('active-drag');
+        });
+        container.addEventListener('mouseup', () => {
+            isDown = false;
+            container.classList.remove('active-drag');
+        });
+        container.addEventListener('mousemove', (e) => {
+            if(!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - container.offsetLeft;
+            const walk = (x - startX) * 1; // scroll-fast multiplier
+            container.scrollLeft = scrollLeft - walk;
+        });
+    }
+
+    document.querySelectorAll('.books-row').forEach(row => enableDragScroll(row));
 </script>
 </body>
     </html>
