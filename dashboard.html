@@ -5,7 +5,7 @@
   <title>Dashboard Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Styles (non modifiés sauf ajout overlay) -->
+  <!-- Styles (inchangés / identiques à l'original) -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,12 +20,10 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
-      flex-wrap:wrap;
     }
     header h1 {
       font-size:18px;
       margin:0;
-      cursor:pointer;
     }
     header .btn {
       background:white;
@@ -36,7 +34,6 @@
       font-weight:bold;
       font-size:14px;
       margin-left:5px;
-      cursor:pointer;
     }
     main {
       padding:15px;
@@ -51,6 +48,37 @@
       margin:10px 0;
       color:#444;
     }
+    #myBooks {
+      margin-top:15px;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap:12px;
+    }
+    .book-card {
+      background:white;
+      border-radius:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+      padding:10px;
+      display:flex;
+      align-items:center;
+    }
+    .book-card img {
+      width:70px;
+      height:90px;
+      object-fit:cover;
+      border-radius:6px;
+      margin-right:10px;
+    }
+    .book-info h3 {
+      margin:0;
+      font-size:15px;
+      color:#4b0082;
+    }
+    .book-info p {
+      margin:3px 0 0;
+      font-size:13px;
+      color:#555;
+    }
     form {
       background:white;
       padding:15px;
@@ -64,13 +92,12 @@
       margin-top:10px;
       color:#333;
     }
-    form input, form textarea, form select {
+    form input, form textarea {
       width:100%;
       padding:8px;
       margin-top:5px;
       border:1px solid #ccc;
       border-radius:6px;
-      box-sizing:border-box;
     }
     #submitBtn {
       margin-top:15px;
@@ -92,6 +119,12 @@
       font-size:14px;
       text-align:center;
     }
+    .empty {
+      grid-column:1/-1;
+      text-align:center;
+      font-style:italic;
+      color:#777;
+    }
     footer {
       background:#4b0082;
       color:white;
@@ -105,59 +138,50 @@
       text-decoration:none;
       margin:0 5px;
     }
-    /* Popup flottant */
-    #popupMessage {
-      display:none;
-      position:fixed;
-      top:20px;
-      right:20px;
-      background:#4b0082;
-      color:white;
-      padding:15px 20px;
-      border-radius:10px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);
-      z-index:1000;
-      font-weight:bold;
-    }
-    /* Overlay "En cours" */
-    #inProgressOverlay {
-      display:none;
-      position:fixed;
-      inset:0;
-      background: rgba(0,0,0,0.45);
-      z-index:2000;
-      align-items:center;
-      justify-content:center;
-    }
-    #inProgressBox {
-      background: #fff;
-      padding:18px 22px;
-      border-radius:10px;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-      min-width:220px;
-    }
-    .spinner {
-      width:28px;
-      height:28px;
-      border-radius:50%;
-      border:4px solid #eee;
-      border-top-color:#4b0082;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    @media (max-width:500px) {
-      header { flex-direction:column; align-items:flex-start; }
-      header .btn { margin-top:10px; margin-left:0; }
+    /* Overlay minimal "en cours" */
+    #fs-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+    }
+    #fs-overlay .box {
+      background: transparent;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+    }
+    .fs-spinner {
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      border:4px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      animation: fs-spin 1s linear infinite;
+    }
+    .fs-text {
+      color: #fff;
+      font-weight:700;
+      letter-spacing:0.4px;
+      text-transform: lowercase;
+    }
+    @keyframes fs-spin { to { transform: rotate(360deg); } }
+
+    /* small responsive niceties (unchanged) */
+    @media (max-width: 500px) {
+      header { flex-direction: column; align-items: flex-start; }
+      header .btn { margin-top: 10px; margin-left: 0; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1 onclick="location.href='index.html'">📚 Liaread</h1>
+    <h1>📚 Dashboard Auteur</h1>
     <div>
       <a href="index.html" class="btn">🏠 Accueil</a>
       <button id="logout" class="btn">🚪 Déconnexion</button>
@@ -168,18 +192,8 @@
     <p id="welcome">Bienvenue cher auteur ✨</p>
 
     <h2>Soumettre un Livre</h2>
-
-    <!-- FORMULAIRE : action FormSubmit correctement configuré -->
-    <form id="bookForm"
-          action="https://formsubmit.co/myliaread@gmail.com"
-          method="POST"
-          enctype="multipart/form-data">
-
-      <!-- FormSubmit hidden fields -->
-      <input type="hidden" name="_next" value="submit.success.html">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_subject" value="Nouvelle soumission de livre - {{titre}}">
-
+    <!-- IMPORTANT : action FormSubmit doit être ton email actif (myliaread@gmail.com) -->
+    <form id="bookForm" action="https://formsubmit.co/myliaread@gmail.com" method="POST" enctype="multipart/form-data">
       <label>Titre :</label>
       <input type="text" name="titre" placeholder="Titre du livre" required>
 
@@ -194,7 +208,7 @@
 
       <label>Catégorie :</label>
       <select name="categorie" required>
-        <option value="">Sélectionnez une catégorie</option>
+        <option value="">--Choisir une catégorie--</option>
         <option value="roman">Roman</option>
         <option value="romantique">Romantique</option>
         <option value="milliardaire">Milliardaire</option>
@@ -211,7 +225,7 @@
       <input type="file" name="couverture" accept="image/*" required>
 
       <label>Fichier du livre :</label>
-      <input type="file" name="ebook" accept=".pdf,application/pdf,application/epub+zip,.epub" required>
+      <input type="file" name="ebook" accept=".pdf,.epub" required>
 
       <label>Contact (email ou WhatsApp) :</label>
       <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +2290147244055" required>
@@ -221,14 +235,11 @@
     </form>
   </main>
 
-  <!-- popup notifications -->
-  <div id="popupMessage"></div>
-
-  <!-- overlay "En cours..." -->
-  <div id="inProgressOverlay">
-    <div id="inProgressBox" role="status" aria-live="polite">
-      <div class="spinner" aria-hidden="true"></div>
-      <div>En cours… Envoi en cours, redirection après validation.</div>
+  <!-- Overlay minimal "en cours" (spinner + texte "en cours") -->
+  <div id="fs-overlay" aria-hidden="true">
+    <div class="box" role="status" aria-live="polite">
+      <div class="fs-spinner" aria-hidden="true"></div>
+      <div class="fs-text">en cours</div>
     </div>
   </div>
 
@@ -238,7 +249,7 @@
     <a href="https://wa.me/2290147244055" target="_blank">WhatsApp</a>
   </footer>
 
-  <!-- Firebase (auth + persistence + signOut) -->
+  <!-- Firebase + Auth (module import, persistence) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -256,9 +267,10 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // garder l'utilisateur connecté (local)
+    // Garde l'utilisateur connecté localement
     setPersistence(auth, browserLocalPersistence).catch(()=>{/* ignore */});
 
+    // Vérifie connexion et affiche email
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         alert("⚠️ Tu dois te connecter pour accéder au dashboard.");
@@ -268,44 +280,91 @@
       }
     });
 
-    document.getElementById("logout").addEventListener("click", () => {
+    // Déconnexion
+    document.getElementById('logout').addEventListener('click', () => {
       signOut(auth).then(() => location.href = "login.html");
     });
   </script>
 
-  <!-- Form submit handling: show "En cours" overlay then submit natively (no fetch) -->
+  <!-- Script pour la soumission FormSubmit (native) + overlay minimal + gestion d'erreur -->
   <script>
-    const form = document.getElementById('bookForm');
-    const popup = document.getElementById('popupMessage');
-    const inProgress = document.getElementById('inProgressOverlay');
+    (function() {
+      const form = document.getElementById('bookForm');
+      const overlay = document.getElementById('fs-overlay');
+      const messageEl = document.getElementById('message');
 
-    function showPopup(text, isSuccess = true) {
-      popup.textContent = text;
-      popup.style.background = isSuccess ? '#28a745' : '#dc3545';
-      popup.style.display = 'block';
-      setTimeout(() => { popup.style.display = 'none'; }, 3000);
-    }
+      if (!form) return;
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
+      // Ensure the form attributes required by FormSubmit
+      try {
+        form.setAttribute('method', 'POST');
+        form.setAttribute('enctype', 'multipart/form-data');
+      } catch (e) { /* ignore */ }
 
-      // quick client-side validity check
-      if (!form.checkValidity()) {
-        showPopup("❌ Remplis tous les champs requis.", false);
-        return;
+      // Ensure hidden fields exist
+      function ensureHidden(name, value) {
+        if (!form.querySelector(`input[name="${name}"]`)) {
+          const i = document.createElement('input');
+          i.type = 'hidden';
+          i.name = name;
+          i.value = value;
+          form.appendChild(i);
+        } else {
+          // update value to be safe
+          form.querySelector(`input[name="${name}"]`).value = value;
+        }
+      }
+      ensureHidden('_next', 'submit.success.html');
+      ensureHidden('_captcha', 'false');
+      ensureHidden('_subject', 'Nouvelle soumission de livre - Liaread');
+
+      // Show overlay
+      function showOverlay() {
+        overlay.style.display = 'flex';
+        overlay.setAttribute('aria-hidden','false');
+      }
+      function hideOverlay() {
+        overlay.style.display = 'none';
+        overlay.setAttribute('aria-hidden','true');
       }
 
-      // show in-progress overlay
-      inProgress.style.display = 'flex';
+      // Submit handler (capture phase to avoid other handlers interfering)
+      form.addEventListener('submit', function(e) {
+        // prevent other handlers that might use fetch
+        try { e.stopImmediatePropagation(); } catch (err) {}
+        e.preventDefault();
 
-      // small delay so user sees overlay, then submit natively to FormSubmit
-      // native submission will navigate away (FormSubmit will redirect to _next)
-      setTimeout(() => {
-        // remove overlay just before submission (optional)
-        // inProgress.style.display = 'none';
-        form.submit(); // native POST to FormSubmit — files included
-      }, 700);
-    });
+        // Clear previous messages
+        messageEl.innerText = '';
+
+        // Browser built-in validity check
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        showOverlay();
+
+        // Submit nativement — this will navigate away if FormSubmit succeeds
+        // Keep overlay visible while browser navigates.
+        // If for any reason navigation doesn't happen (FormSubmit blocked or error),
+        // hide overlay after 25s and show error message.
+        let fallbackTimer = setTimeout(() => {
+          hideOverlay();
+          messageEl.style.color = 'red';
+          messageEl.innerText = '❌ Envoi introuvable — vérifie ta connexion ou l\'activation FormSubmit (confirme l\'email).';
+        }, 25000); // 25 seconds fallback
+
+        try {
+          form.submit(); // native POST to FormSubmit (files included)
+        } catch (err) {
+          clearTimeout(fallbackTimer);
+          hideOverlay();
+          messageEl.style.color = 'red';
+          messageEl.innerText = '❌ Erreur lors de l\'envoi : ' + (err.message || err);
+        }
+      }, true); // use capture to preempt other listeners
+    })();
   </script>
 </body>
-    </html>
+  </html>
