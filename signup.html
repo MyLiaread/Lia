@@ -1,118 +1,167 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Inscription - Liaread</title>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inscription - Lia</title>
+
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
+    :root{
+      --primary:#6a0dad;
+      --primary-dark:#4b0082;
+      --success:#2e8b57;
+      --danger:#d9534f;
+      --muted:#666;
+      --card:#fff;
     }
-    header {
-      width: 100%;
-      padding: 15px;
-      background: #6a0dad;
-      color: #fff;
-      font-size: 22px;
-      font-weight: bold;
-      text-align: center;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(135deg,#fffafb,#f4efff);
+      font-family:"Quicksand",system-ui,Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
     }
-    header a {
-      color: #fff;
-      text-decoration: none;
+
+    .card{
+      width:94%;
+      max-width:420px;
+      background:var(--card);
+      border-radius:14px;
+      padding:22px;
+      box-shadow:0 10px 30px rgba(75,0,130,0.08);
+      text-align:center;
+      animation:pop .28s ease;
     }
-    form {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: 320px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    @keyframes pop { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
+
+    .brand {
+      font-family:'Great Vibes', cursive;
+      color:var(--primary);
+      font-size:38px;
+      margin:0 0 6px;
+      letter-spacing:1px;
+      text-shadow:0 3px 10px rgba(106,13,173,0.12);
     }
-    input, button {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
+    .subtitle {
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:14px;
     }
-    button {
-      background: #6a0dad;
-      color: #fff;
+
+    form { display:flex; flex-direction:column; gap:10px; align-items:stretch; }
+
+    label{ font-size:13px; color:#333; text-align:left; margin-top:6px; }
+    input[type="text"], input[type="email"], input[type="password"]{
+      width:100%;
+      padding:11px 12px;
+      border-radius:10px;
+      border:1px solid #e6e0f3;
+      font-size:15px;
+      outline:none;
+      transition: box-shadow .12s, border-color .12s;
+    }
+    input:focus{ box-shadow:0 6px 18px rgba(106,13,173,0.06); border-color:var(--primary); }
+
+    .password-row { display:flex; gap:8px; align-items:center; }
+    .toggle-btn {
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e6e0f3;
+      background:linear-gradient(180deg,#fff,#faf7ff);
+      cursor:pointer;
+      color:var(--primary);
+      font-weight:700;
+    }
+
+    .note { font-size:13px; color:var(--muted); margin-top:4px; text-align:left; }
+
+    .submit-btn{
+      margin-top:8px;
+      padding:12px;
+      border-radius:12px;
       border: none;
-      cursor: pointer;
+      background: linear-gradient(180deg,var(--primary),var(--primary-dark));
+      color:#fff;
+      font-weight:800;
+      font-size:15px;
+      cursor:pointer;
+      transition: transform .08s ease;
     }
-    button:hover {
-      background: #530a9e;
+    .submit-btn:active{ transform: translateY(1px) }
+
+    .msg {
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      display:none;
+      font-weight:600;
+      font-size:14px;
     }
-    .small-text {
-      font-size: 14px;
-      text-align: center;
-    }
-    .small-text a {
-      color: #6a0dad;
-      text-decoration: none;
-    }
-    footer {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 14px;
-    }
-    footer a {
-      color: #6a0dad;
-      text-decoration: none;
+    .msg.success{ background: rgba(46,139,87,0.08); color:var(--success); border:1px solid rgba(46,139,87,0.12); display:block; }
+    .msg.error{ background: rgba(217,83,79,0.08); color:var(--danger); border:1px solid rgba(217,83,79,0.12); display:block; }
+
+    .small-links{ margin-top:10px; font-size:14px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .small-links a{ color:var(--primary); text-decoration:none; font-weight:700; }
+
+    @media (max-width:420px){
+      .brand{ font-size:30px }
+      .card{ padding:18px }
     }
   </style>
 </head>
 <body>
+  <main class="card" role="main" aria-labelledby="signupTitle">
+    <h1 id="signupTitle" class="brand">Lia ✨</h1>
+    <p class="subtitle">Rejoins la communauté d'auteurs — partage tes histoires magiques.</p>
 
-  <header>
-    <a href="index.html">Liaread</a>
-  </header>
+    <form id="signupForm" novalidate>
+      <label for="authorName">Nom d'auteur (pseudo) *</label>
+      <input id="authorName" name="authorName" type="text" placeholder="Ex: AminaLune" required>
 
-  <h2>Créer un compte auteur</h2>
+      <label for="realName">Vrai nom *</label>
+      <input id="realName" name="realName" type="text" placeholder="Ex: Amina Kouassi" required>
 
-  <!-- Formulaire avec FormSubmit -->
-  <form id="signupForm" action="https://formsubmit.co/agodthanks@gmail.com" method="POST">
-    <input type="text" name="auteur" placeholder="Nom d'auteur (obligatoire)" required>
-    <input type="text" name="vrai_nom" placeholder="Vrai nom (obligatoire)" required>
-    <input type="email" id="email" name="email" placeholder="Email (obligatoire)" required>
-    
-    <div style="display:flex;align-items:center;gap:8px;">
-      <input type="password" id="password" name="password" placeholder="Mot de passe (min 6 caractères)" required minlength="6">
-      <input type="checkbox" onclick="togglePassword()"> Voir
-    </div>
-    
-    <button type="submit">Créer un compte</button>
-    <p id="message"></p>
+      <label for="email">Email *</label>
+      <input id="email" name="email" type="email" placeholder="ton@email.com" required>
 
-    <!-- Prévention SPAM FormSubmit -->
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_next" value="https://ton-site.github.io/success.html">
-  </form>
+      <label for="password">Mot de passe * (6 caractères min.)</label>
+      <div style="display:flex;gap:8px;">
+        <input id="password" name="password" type="password" placeholder="••••••••" minlength="6" required style="flex:1;">
+        <button type="button" class="toggle-btn" id="togglePwd" aria-pressed="false" aria-label="Afficher le mot de passe">Voir</button>
+      </div>
 
-  <p class="small-text">
-    Déjà un compte ? <a href="login.html">Se connecter</a>
-  </p>
+      <div class="note">En créant un compte, tu acceptes de recevoir des messages administratifs.</div>
 
-  <footer>
-    <p>Contact : 
-      <a href="mailto:agodthanks@gmail.com">Email</a> | 
-      <a href="https://wa.me/2290199616039">WhatsApp</a>
-    </p>
-  </footer>
+      <button type="submit" class="submit-btn" id="signupBtn">Créer mon compte</button>
 
-  <script>
-    // Config Firebase
+      <div id="messageBox" role="status" aria-live="polite"></div>
+
+      <div class="small-links">
+        <a href="login.html">J'ai déjà un compte</a>
+        <a href="index.html">Retour à l'accueil</a>
+      </div>
+    </form>
+  </main>
+
+  <!-- Firebase (modulaire v9) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import {
+      getAuth,
+      setPersistence,
+      browserLocalPersistence,
+      createUserWithEmailAndPassword,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    // === CONFIG (TES VRAIES INFOS) ===
     const firebaseConfig = {
       apiKey: "AIzaSyDpaf3wdXkypPKH443SIZcJRFiz02s-t30",
       authDomain: "liaread.firebaseapp.com",
@@ -123,40 +172,104 @@
       measurementId: "G-63JN91LVV6"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    // initialize
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    // Affiche / cache mot de passe
-    function togglePassword() {
-      const pwd = document.getElementById("password");
-      pwd.type = pwd.type === "password" ? "text" : "password";
+    // set local persistence so user remains logged in
+    setPersistence(auth, browserLocalPersistence).catch((err) => {
+      // non bloquant, on affiche dans la console
+      console.warn("Persistance non appliquée:", err && err.message);
+    });
+
+    // DOM refs
+    const form = document.getElementById('signupForm');
+    const authorNameEl = document.getElementById('authorName');
+    const realNameEl = document.getElementById('realName');
+    const emailEl = document.getElementById('email');
+    const passwordEl = document.getElementById('password');
+    const toggleBtn = document.getElementById('togglePwd');
+    const messageBox = document.getElementById('messageBox');
+
+    // helper: show message
+    function showMessage(text, type = 'success') {
+      messageBox.className = 'msg ' + (type === 'success' ? 'success' : 'error');
+      messageBox.textContent = text;
     }
 
-    // Gestion de l’inscription avec Firebase + envoi mail FormSubmit
-    const form = document.getElementById("signupForm");
-    const message = document.getElementById("message");
+    function clearMessage() {
+      messageBox.className = '';
+      messageBox.textContent = '';
+    }
 
-    form.addEventListener("submit", function(e) {
-      e.preventDefault(); // bloque l’envoi auto
+    // toggle password
+    toggleBtn.addEventListener('click', () => {
+      const isPwd = passwordEl.type === 'password';
+      passwordEl.type = isPwd ? 'text' : 'password';
+      toggleBtn.textContent = isPwd ? 'Cacher' : 'Voir';
+      toggleBtn.setAttribute('aria-pressed', isPwd ? 'true' : 'false');
+    });
 
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    // map firebase error codes to friendly french messages
+    function friendlyError(err) {
+      if (!err || !err.code) return "Une erreur est survenue. Réessaie.";
+      switch (err.code) {
+        case 'auth/email-already-in-use': return "Cet email est déjà utilisé. Essaie de te connecter.";
+        case 'auth/invalid-email': return "Adresse email invalide.";
+        case 'auth/weak-password': return "Mot de passe trop faible. Utilise au moins 6 caractères.";
+        case 'auth/operation-not-allowed': return "Inscription désactivée côté serveur.";
+        case 'auth/network-request-failed': return "Problème réseau — vérifie ta connexion.";
+        default: return err.message || "Erreur inconnue.";
+      }
+    }
 
-      // Création compte Firebase
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          message.textContent = "✅ Compte créé avec succès !";
-          message.style.color = "green";
+    // handle form submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessage();
 
-          // Après succès Firebase → envoi aussi via FormSubmit
-          setTimeout(() => form.submit(), 800);
-        })
-        .catch((error) => {
-          message.textContent = "❌ " + error.message;
-          message.style.color = "red";
-        });
+      const authorName = authorNameEl.value.trim();
+      const realName = realNameEl.value.trim();
+      const email = emailEl.value.trim();
+      const password = passwordEl.value;
+
+      // basic validation
+      if (!authorName || !realName || !email || !password) {
+        showMessage("Tous les champs marqués * sont requis.", "error");
+        return;
+      }
+      if (password.length < 6) {
+        showMessage("Le mot de passe doit contenir au moins 6 caractères.", "error");
+        return;
+      }
+
+      // disable button while processing
+      const btn = document.getElementById('signupBtn');
+      btn.disabled = true;
+      btn.textContent = "Création en cours…";
+
+      try {
+        // create user
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+        // set displayName to authorName (optional)
+        try {
+          await updateProfile(cred.user, { displayName: authorName });
+        } catch (e) {
+          console.warn("updateProfile échoué:", e);
+        }
+
+        showMessage("✅ Compte créé avec succès ! Redirection…", "success");
+
+        // small delay, then redirect to dashboard
+        setTimeout(() => { window.location.href = "dashboard.html"; }, 3000);
+
+      } catch (err) {
+        showMessage(friendlyError(err), "error");
+        btn.disabled = false;
+        btn.textContent = "Créer mon compte";
+      }
     });
   </script>
-
 </body>
-    </html>
+</html>
