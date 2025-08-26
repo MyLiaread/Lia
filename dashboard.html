@@ -5,149 +5,25 @@
   <title>Dashboard Auteur - Liaread</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Styles -->
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background:#f9f9f9;
-      margin:0;
-      padding:0;
-    }
-    header {
-      background:#4b0082;
-      color:white;
-      padding:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    header h1 {
-      font-size:22px;
-      font-family: "Brush Script MT", cursive;
-      margin:0;
-      letter-spacing: 1px;
-    }
-    header .btn {
-      background:white;
-      color:#4b0082;
-      padding:8px 12px;
-      border-radius:6px;
-      text-decoration:none;
-      font-weight:bold;
-      font-size:14px;
-      margin-left:5px;
-    }
-    main {
-      padding:15px;
-    }
-    h2 {
-      margin-top:25px;
-      color:#333;
-      font-size:18px;
-    }
-    #welcome {
-      font-weight:bold;
-      margin:10px 0;
-      color:#444;
-      font-family: "Brush Script MT", cursive;
-    }
-    form {
-      background:white;
-      padding:15px;
-      border-radius:12px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
-      margin-top:20px;
-    }
-    form label {
-      display:block;
-      font-size:14px;
-      margin-top:10px;
-      color:#333;
-    }
-    form input, form textarea, form select {
-      width:100%;
-      padding:8px;
-      margin-top:5px;
-      border:1px solid #ccc;
-      border-radius:6px;
-    }
-    #submitBtn {
-      margin-top:15px;
-      width:100%;
-      background:#4b0082;
-      color:white;
-      padding:10px;
-      border:none;
-      border-radius:6px;
-      font-size:16px;
-      font-weight:bold;
-      cursor:pointer;
-    }
-    #submitBtn:hover {
-      background:#360061;
-    }
-    #message {
-      margin-top:10px;
-      font-size:14px;
-      text-align:center;
-    }
-    footer {
-      background:#4b0082;
-      color:white;
-      padding:15px;
-      text-align:center;
-      margin-top:30px;
-      font-size:14px;
-    }
-    footer a {
-      color:#fff;
-      text-decoration:none;
-      margin:0 5px;
-    }
-    /* Popup flottant */
-    #popupMessage {
-      display:none;
-      position:fixed;
-      top:20px;
-      right:20px;
-      background:#4b0082;
-      color:white;
-      padding:15px 20px;
-      border-radius:10px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.2);
-      z-index:1000;
-      font-weight:bold;
-    }
-    /* Overlay "En cours" */
-    #overlay {
-      display:none;
-      position:fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background: rgba(255,255,255,0.8);
-      z-index:2000;
-      text-align:center;
-    }
-    #overlay .spinner {
-      margin-top:25%;
-      border: 6px solid #ccc;
-      border-top: 6px solid #4b0082;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      animation: spin 1s linear infinite;
-      display:inline-block;
-    }
-    #overlay p {
-      font-family:"Brush Script MT", cursive;
-      font-size:18px;
-      color:#4b0082;
-      margin-top:10px;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg);}
-      100% { transform: rotate(360deg);}
-    }
+    body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; }
+    header { background:#4b0082; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center; }
+    header h1 { font-size:22px; font-family:"Brush Script MT", cursive; margin:0; }
+    header .btn { background:white; color:#4b0082; padding:8px 12px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px; margin-left:5px; }
+    main { padding:15px; }
+    h2 { margin-top:25px; color:#333; font-size:18px; }
+    #welcome { font-weight:bold; margin:10px 0; color:#444; font-family:"Brush Script MT", cursive; }
+    form { background:white; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px; }
+    form label { display:block; font-size:14px; margin-top:10px; color:#333; }
+    form input, form textarea, form select { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:6px; }
+    #submitBtn { margin-top:15px; width:100%; background:#4b0082; color:white; padding:10px; border:none; border-radius:6px; font-size:16px; font-weight:bold; cursor:pointer; }
+    #submitBtn:hover { background:#360061; }
+    footer { background:#4b0082; color:white; padding:15px; text-align:center; margin-top:30px; font-size:14px; }
+    footer a { color:#fff; text-decoration:none; margin:0 5px; }
+    #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.8); z-index:2000; text-align:center; }
+    #overlay .spinner { margin-top:25%; border: 6px solid #ccc; border-top: 6px solid #4b0082; border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; display:inline-block; }
+    #overlay p { font-family:"Brush Script MT", cursive; font-size:18px; color:#4b0082; margin-top:10px; }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
   </style>
 </head>
 <body>
@@ -164,9 +40,10 @@
 
     <h2>Soumettre un Livre</h2>
     <form id="bookForm"
-          action="https://formsubmit.co/agodthanks@gmail.com"
+          action="https://formsubmit.co/myliaread@gmail.com"
           method="POST"
           enctype="multipart/form-data">
+
       <!-- Redirection après succès -->
       <input type="hidden" name="_next" value="submit.success.html">
       <input type="hidden" name="_captcha" value="false">
@@ -208,18 +85,13 @@
       <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +229XXXXXXXXX" required>
 
       <button type="submit" id="submitBtn">📤 Publier</button>
-      <p id="message"></p>
     </form>
   </main>
 
-  <!-- Overlay "En cours" -->
   <div id="overlay">
     <div class="spinner"></div>
-    <p>En cours...</p>
+    <p>Envoi en cours...</p>
   </div>
-
-  <!-- Popup flottant -->
-  <div id="popupMessage"></div>
 
   <footer>
     📞 Contact :
@@ -228,7 +100,6 @@
   </footer>
 
   <script type="module">
-    // Firebase config
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
@@ -243,29 +114,13 @@
     };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
-    // Persistance de connexion
     setPersistence(auth, browserLocalPersistence);
 
-    // Elements
     const form = document.getElementById('bookForm');
-    const popup = document.getElementById('popupMessage');
     const overlay = document.getElementById('overlay');
 
-    function showPopup(text, isSuccess = true) {
-      popup.textContent = text;
-      popup.style.background = isSuccess ? '#28a745' : '#dc3545';
-      popup.style.display = 'block';
-      setTimeout(() => { popup.style.display = 'none'; }, 5000);
-    }
-
-    // Soumission avec affichage overlay
-    form.addEventListener('submit', function(e) {
-      if (!form.checkValidity()) {
-        e.preventDefault();
-        showPopup("❌ Remplis tous les champs requis correctement.", false);
-        return;
-      }
+    // Affiche "En cours" pendant l’envoi
+    form.addEventListener('submit', function() {
       overlay.style.display = 'block';
     });
 
