@@ -259,31 +259,20 @@
       setTimeout(() => { popup.style.display = 'none'; }, 5000);
     }
 
-    // Nouvelle logique : validation côté client, affichage overlay, puis soumission NATIVE.
+    // Soumission avec affichage overlay
     form.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      // validation HTML5 native
       if (!form.checkValidity()) {
+        e.preventDefault();
         showPopup("❌ Remplis tous les champs requis correctement.", false);
         return;
       }
-
-      // afficher overlay "En cours"
       overlay.style.display = 'block';
-
-      // court délai pour que l'utilisateur voie l'overlay puis soumission native
-      setTimeout(() => {
-        // soumission native : FormSubmit recevra bien la requête POST (inclut fichiers)
-        form.submit();
-        // note : la page va naviguer vers FormSubmit, qui redirigera vers _next (submit.success.html)
-      }, 700);
     });
 
-    // déconnexion simple
+    // Déconnexion simple
     document.getElementById('logout').addEventListener('click', function() {
       location.reload();
     });
   </script>
 </body>
-  </html>
+</html>
