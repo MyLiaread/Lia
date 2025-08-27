@@ -1,95 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Soumettre un Livre - Liaread</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Styles (même aspect que le dashboard) -->
-  <style>
-    body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0; }
-    header { background:#4b0082; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center; }
-    header h1 { font-size:22px; font-family: "Brush Script MT", cursive; margin:0; letter-spacing: 1px; }
-    header .btn { background:white; color:#4b0082; padding:8px 12px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:14px; margin-left:5px; }
-    main { padding:15px; }
-    h2 { margin-top:25px; color:#333; font-size:18px; }
-    form { background:white; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px; }
-    form label { display:block; font-size:14px; margin-top:10px; color:#333; }
-    form input, form textarea, form select { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:6px; }
-    button[type="submit"] { margin-top:15px; width:100%; background:#4b0082; color:white; padding:10px; border:none; border-radius:6px; font-size:16px; font-weight:bold; cursor:pointer; }
-    button[type="submit"]:hover { background:#360061; }
-    footer { background:#4b0082; color:white; padding:15px; text-align:center; margin-top:30px; font-size:14px; }
-    footer a { color:#fff; text-decoration:none; margin:0 5px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soumettre un Livre - Liaread</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f9f9f9; margin:0; padding:0;}
+main { padding:15px;}
+form { background:white; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+form label { display:block; margin-top:10px;}
+form input, form textarea, form select { width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:6px;}
+button { margin-top:15px; width:100%; background:#4b0082; color:white; padding:10px; border:none; border-radius:6px; font-size:16px; font-weight:bold; cursor:pointer;}
+button:hover { background:#360061;}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Lia</h1>
-    <div>
-      <a href="dashboard.html" class="btn">🏠 Dashboard</a>
-    </div>
-  </header>
 
-  <main>
-    <h2>Soumettre un Livre</h2>
+<main>
+<h2>Soumettre un Livre</h2>
+<form action="https://formsubmit.co/agodthanks@gmail.com" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="_next" value="submit.success.html">
+  <input type="hidden" name="_captcha" value="false">
 
-    <!-- FORMULAIRE PUR (AUCUN SCRIPT DE SUBMIT) -->
-    <form id="bookForm"
-          action="https://formsubmit.co/agodthanks@gmail.com"
-          method="POST"
-          enctype="multipart/form-data"
-          accept-charset="utf-8">
-      <!-- Redirection après succès -->
-      <input type="hidden" name="_next" value="submit.success.html">
-      <!-- Désactive le captcha FormSubmit -->
-      <input type="hidden" name="_captcha" value="false">
+  <label>Titre :</label>
+  <input type="text" name="titre" required>
 
-      <label>Titre :</label>
-      <input type="text" name="titre" placeholder="Titre du livre" required>
+  <label>Auteur / Pseudo :</label>
+  <input type="text" name="auteur" required>
 
-      <label>Auteur / Pseudo :</label>
-      <input type="text" name="auteur" placeholder="Ton nom ou pseudo" required>
+  <label>Résumé :</label>
+  <textarea name="resume" rows="4" required></textarea>
 
-      <label>Résumé du livre :</label>
-      <textarea name="resume" rows="6" placeholder="Décris ton livre en quelques lignes..." required></textarea>
+  <label>Prix (F CFA) :</label>
+  <input type="number" name="prix" required>
 
-      <label>Prix (F CFA) :</label>
-      <input type="number" name="prix" placeholder="Ex: 2500" required>
+  <label>Catégorie :</label>
+  <select name="categorie" required>
+    <option value="">--Choisir une catégorie--</option>
+    <option value="roman">Roman</option>
+    <option value="romantique">Romantique</option>
+    <option value="milliardaire">Milliardaire</option>
+    <option value="nouvelle">Nouvelle</option>
+    <option value="conte">Conte</option>
+    <option value="vampire-loup-garou">Vampire / Loup-garou</option>
+    <option value="bd">BD</option>
+    <option value="aventure">Aventure</option>
+    <option value="bien-etre">Bien-être</option>
+    <option value="fantastique">Fantastique</option>
+  </select>
 
-      <label>Catégorie :</label>
-      <select name="categorie" required>
-        <option value="">--Choisir une catégorie--</option>
-        <option value="roman">Roman</option>
-        <option value="romantique">Romantique</option>
-        <option value="milliardaire">Milliardaire</option>
-        <option value="nouvelle">Nouvelle</option>
-        <option value="conte">Conte</option>
-        <option value="vampire-loup-garou">Vampire / Loup-garou</option>
-        <option value="bd">BD</option>
-        <option value="aventure">Aventure</option>
-        <option value="bien-etre">Bien-être</option>
-        <option value="fantastique">Fantastique</option>
-      </select>
+  <label>Couverture :</label>
+  <input type="file" name="couverture" accept="image/*" required>
 
-      <label>Couverture (image) :</label>
-      <input type="file" name="couverture" accept="image/*" required>
+  <label>Fichier du livre :</label>
+  <input type="file" name="ebook" accept=".pdf,.epub" required>
 
-      <label>Fichier du livre (PDF ou EPUB) :</label>
-      <input type="file" name="ebook" accept=".pdf,.epub" required>
+  <label>Contact :</label>
+  <input type="text" name="contact" required>
 
-      <label>Contact (email ou WhatsApp) :</label>
-      <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +229XXXXXXXXX" required>
+  <button type="submit">📤 Publier</button>
+</form>
+</main>
 
-      <button type="submit">📤 Publier</button>
-    </form>
-  </main>
-
-  <footer>
-    📞 Contact :
-    <a href="mailto:myliaread@gmail.com">myliaread@gmail.com</a> |
-    <a href="https://wa.me/2290147244055" target="_blank">WhatsApp</a>
-  </footer>
-
-  <!-- Note: intentionally no JS here to guarantee native POST to FormSubmit -->
 </body>
-</html>
+    </html>
