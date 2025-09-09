@@ -5,59 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Soumettre un Livre</title>
   <style>
-    body{font-family:Arial,sans-serif;background:#f9f9f9;padding:20px;}
-    form{background:#fff;padding:20px;border-radius:10px;max-width:600px;margin:0 auto;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-    label{display:block;margin-top:15px;font-weight:bold;}
-    input, textarea, select, button{width:100%;padding:10px;margin-top:5px;border-radius:6px;border:1px solid #ccc;}
-    button{background:#4b0082;color:#fff;border:none;font-weight:bold;cursor:pointer;}
-    button:hover{background:#360061;}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #4b0082;
+      margin-bottom: 15px;
+    }
+    p {
+      font-size: 16px;
+      color: #333;
+      margin: 10px 0 20px;
+    }
+    a {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      background: #4b0082;
+      color: #fff;
+      transition: background 0.3s;
+    }
+    a:hover {
+      background: #360061;
+    }
   </style>
 </head>
 <body>
-  <h1 style="text-align:center;color:#4b0082;">Soumettre un Livre</h1>
-
-  <form action="https://formsubmit.co/agodthanks@gmail.com" method="POST" enctype="multipart/form-data">
-    <!-- Redirection après succès -->
-    <input type="hidden" name="_next" value="submit.success.html">
-    <input type="hidden" name="_captcha" value="false">
-
-    <label>Titre :</label>
-    <input type="text" name="titre" placeholder="Titre du livre" required>
-
-    <label>Nom / Pseudo :</label>
-    <input type="text" name="auteur" placeholder="Ton nom ou pseudo" required>
-
-    <label>Résumé :</label>
-    <textarea name="resume" rows="4" placeholder="Décris ton livre..." required></textarea>
-
-    <label>Prix (F CFA) :</label>
-    <input type="number" name="prix" placeholder="Ex: 2500" required>
-
-    <label>Catégorie :</label>
-    <select name="categorie" required>
-      <option value="">--Choisir une catégorie--</option>
-      <option value="roman">Roman</option>
-      <option value="romantique">Romantique</option>
-      <option value="milliardaire">Milliardaire</option>
-      <option value="nouvelle">Nouvelle</option>
-      <option value="conte">Conte</option>
-      <option value="vampire-loup-garou">Vampire / Loup-garou</option>
-      <option value="bd">BD</option>
-      <option value="aventure">Aventure</option>
-      <option value="bien-etre">Bien-être</option>
-      <option value="fantastique">Fantastique</option>
-    </select>
-
-    <label>Couverture :</label>
-    <input type="file" name="couverture" accept="image/*" required>
-
-    <label>Fichier du livre :</label>
-    <input type="file" name="ebook" accept=".pdf,.epub" required>
-
-    <label>Contact (email ou WhatsApp) :</label>
-    <input type="text" name="contact" placeholder="Ex: monemail@gmail.com ou +229XXXXXXXXX" required>
-
-    <button type="submit">📤 Publier</button>
-  </form>
+  <div class="container">
+    <h1>Soumettre un Livre ✨</h1>
+    <p>Pour publier ton livre sur Lia, envoie simplement tes fichiers (PDF, EPUB, couverture, résumé, catégorie, prix, etc.) via :</p>
+    <a href="mailto:myliaread@gmail.com">📧 Email</a>
+    <a href="https://wa.me/2290147244055" target="_blank">💬 WhatsApp</a>
+    <p>Notre équipe s’occupera du reste et te tiendra informé(e) rapidement 💜</p>
+  </div>
 </body>
 </html>
